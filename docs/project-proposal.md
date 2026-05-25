@@ -4,9 +4,9 @@
 
 项目名称：MoonPath：MoonBit 图算法与寻路工具库
 
-参赛者：`w1tness`
+参赛者：`魏泽瑄`
 
-联系方式：`待填写`
+联系方式：`2025213290@bupt.cn / 15911070830`
 
 GitHub 仓库链接：`https://github.com/wzx2007/moonpath`
 

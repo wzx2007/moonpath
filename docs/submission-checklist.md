@@ -25,9 +25,9 @@ moon run cmd/main
 moon info
 ```
 
-## 参赛者提交前必须填写
+## 参赛者提交前必须确认
 
-- `docs/project-proposal.md` 中的联系方式。
+- `docs/project-proposal.md` 中的姓名、联系方式和仓库链接。
 - `moon.mod` 中的 `repository`。
 - GitHub 仓库描述、Topics、许可证确认。
 - GitLink 仓库同步地址。
