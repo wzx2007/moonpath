@@ -25,6 +25,20 @@ pub fn Grid::from_blocked(
 }
 
 ///|
+pub fn Grid::from_parts(
+  width : Int,
+  height : Int,
+  blocked : Array[Point],
+  terrain : Array[CellCost],
+) -> Grid {
+  let grid = Grid::from_blocked(width, height, blocked)
+  for cell in terrain {
+    grid.set_cost(cell.point, cell.cost)
+  }
+  grid
+}
+
+///|
 pub fn Point::new(x : Int, y : Int) -> Point {
   Point::{ x, y }
 }
@@ -73,6 +87,11 @@ pub fn Grid::open_points(self : Grid) -> Array[Point] {
     }
   }
   points
+}
+
+///|
+pub fn Grid::blocked_points(self : Grid) -> Array[Point] {
+  self.blocked.to_array()
 }
 
 ///|
@@ -155,6 +174,13 @@ pub fn Grid::set_cost_rect(
 pub fn Grid::terrain_cost(self : Grid, point : Point) -> Int? {
   guard self.contains(point) else { return None }
   Some(self.terrain.get_or_default(point, 1))
+}
+
+///|
+pub fn Grid::terrain_cells(self : Grid) -> Array[CellCost] {
+  let cells : Array[CellCost] = []
+  self.terrain.each((point, cost) => cells.push(CellCost::{ point, cost }))
+  cells
 }
 
 ///|

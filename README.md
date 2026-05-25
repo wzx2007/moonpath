@@ -13,6 +13,7 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 - A* search with custom heuristic functions.
 - Reachability, path existence, weak/strong connected components, connectivity predicates, graph transpose, degree queries, graph eccentricity/diameter, topological sort, acyclicity checks, and topological layers.
 - Rectangular grid helpers with blocked cells, terrain costs, rectangular bulk updates, 4-neighbor, 8-neighbor, no-corner-cutting 8-neighbor pathfinding, and heuristic-free Dijkstra variants.
+- Grid export/rebuild helpers for blocked cells and terrain overrides.
 - Grid-to-graph conversion for users who want to reuse graph algorithms on tile maps.
 - Blackbox tests covering graph search, cycle detection, graph structure, DAG layers, DFS, all-pairs distances, connectivity, grid routing, terrain costs, corner cutting, and heuristic determinism.
 
@@ -144,7 +145,13 @@ test "bulk grid demo" {
   grid.block_rect(@moonpath.Point::new(1, 1), 3, 2)
   grid.unblock_rect(@moonpath.Point::new(2, 1), 1, 2)
   grid.set_cost_rect(@moonpath.Point::new(0, 0), 2, 2, 4)
-  assert_true(grid.terrain_cost(@moonpath.Point::new(1, 1)) == Some(4))
+  let rebuilt = @moonpath.Grid::from_parts(
+    5,
+    4,
+    grid.blocked_points(),
+    grid.terrain_cells(),
+  )
+  assert_true(rebuilt.terrain_cost(@moonpath.Point::new(1, 1)) == Some(4))
 }
 ```
 

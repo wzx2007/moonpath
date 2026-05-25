@@ -282,6 +282,24 @@ test "grid rectangle helpers update blocked cells and terrain costs" {
 }
 
 ///|
+test "grid exports and rebuilds blocked and terrain cells" {
+  let grid = @moonpath.Grid::new(4, 3)
+  grid.block_rect(@moonpath.Point::new(1, 0), 1, 2)
+  grid.set_cost_rect(@moonpath.Point::new(2, 1), 2, 2, 6)
+  let rebuilt = @moonpath.Grid::from_parts(
+    4,
+    3,
+    grid.blocked_points(),
+    grid.terrain_cells(),
+  )
+  assert_true(rebuilt.is_blocked(@moonpath.Point::new(1, 0)))
+  assert_true(rebuilt.is_blocked(@moonpath.Point::new(1, 1)))
+  assert_eq(rebuilt.blocked_points().length(), 2)
+  assert_eq(rebuilt.terrain_cells().length(), 4)
+  assert_true(rebuilt.terrain_cost(@moonpath.Point::new(3, 2)) == Some(6))
+}
+
+///|
 test "grid astar8 uses consistent octile scale" {
   let grid = @moonpath.Grid::new(3, 3)
   let start = @moonpath.Point::new(0, 0)

@@ -23,6 +23,11 @@ pub(all) struct Arc[N] {
   cost : Int
 } derive(Eq, @debug.Debug)
 
+pub(all) struct CellCost {
+  point : Point
+  cost : Int
+} derive(Eq, @debug.Debug)
+
 pub(all) struct Edge[N] {
   to : N
   cost : Int
@@ -81,10 +86,12 @@ pub fn Grid::astar8(Self, Point, Point) -> Path[Point]?
 pub fn Grid::astar8_no_corner_cutting(Self, Point, Point) -> Path[Point]?
 pub fn Grid::block(Self, Point) -> Unit
 pub fn Grid::block_rect(Self, Point, Int, Int) -> Unit
+pub fn Grid::blocked_points(Self) -> Array[Point]
 pub fn Grid::contains(Self, Point) -> Bool
 pub fn Grid::dijkstra4(Self, Point, Point) -> Path[Point]?
 pub fn Grid::dijkstra8(Self, Point, Point) -> Path[Point]?
 pub fn Grid::from_blocked(Int, Int, Array[Point]) -> Self
+pub fn Grid::from_parts(Int, Int, Array[Point], Array[CellCost]) -> Self
 pub fn Grid::is_blocked(Self, Point) -> Bool
 pub fn Grid::is_open(Self, Point) -> Bool
 pub fn Grid::neighbors4(Self, Point) -> Array[Edge[Point]]
@@ -95,6 +102,7 @@ pub fn Grid::open_points(Self) -> Array[Point]
 pub fn Grid::points(Self) -> Array[Point]
 pub fn Grid::set_cost(Self, Point, Int) -> Unit
 pub fn Grid::set_cost_rect(Self, Point, Int, Int, Int) -> Unit
+pub fn Grid::terrain_cells(Self) -> Array[CellCost]
 pub fn Grid::terrain_cost(Self, Point) -> Int?
 pub fn Grid::to_graph4(Self) -> Graph[Point]
 pub fn Grid::to_graph8(Self) -> Graph[Point]

@@ -67,7 +67,13 @@ test "bulk grid example" {
   grid.block_rect(@moonpath.Point::new(1, 1), 3, 2)
   grid.unblock_rect(@moonpath.Point::new(2, 1), 1, 2)
   grid.set_cost_rect(@moonpath.Point::new(0, 0), 2, 2, 4)
-  assert_true(grid.terrain_cost(@moonpath.Point::new(1, 1)) == Some(4))
+  let rebuilt = @moonpath.Grid::from_parts(
+    5,
+    4,
+    grid.blocked_points(),
+    grid.terrain_cells(),
+  )
+  assert_true(rebuilt.terrain_cost(@moonpath.Point::new(1, 1)) == Some(4))
 }
 ```
 

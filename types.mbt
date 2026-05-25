@@ -35,6 +35,13 @@ pub(all) struct Point {
 } derive(Eq, Hash, Debug)
 
 ///|
+/// A terrain override for one grid cell.
+pub(all) struct CellCost {
+  point : Point
+  cost : Int
+} derive(Eq, Debug)
+
+///|
 /// A rectangular grid with blocked cells.
 pub(all) struct Grid {
   width : Int

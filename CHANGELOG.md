@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0
+
+- Added `CellCost` for structured grid terrain exports.
+- Added `Grid::blocked_points`, `Grid::terrain_cells`, and `Grid::from_parts` for grid export/rebuild workflows.
+- Expanded blackbox tests from 19 to 20 cases.
+
 ## 0.7.0
 
 - Added `Arc[N]` for full source-target-cost edge records.

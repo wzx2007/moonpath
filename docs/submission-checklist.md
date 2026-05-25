@@ -5,7 +5,7 @@
 - MoonBit 主语言实现。
 - 源码结构清晰。
 - README 包含目标、安装、使用、示例。
-- 黑盒测试可运行，当前 19 个测试全部通过。
+- 黑盒测试可运行，当前 20 个测试全部通过。
 - CLI demo 可运行。
 - CI 配置已提供，并在 GitHub Actions 通过。
 - 开发报告已提供。
@@ -28,7 +28,7 @@ moon info
 当前验证输出：
 
 ```text
-Total tests: 19, passed: 19, failed: 0.
+Total tests: 20, passed: 20, failed: 0.
 moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 ```
 
@@ -71,6 +71,7 @@ moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 - add bidirectional Dijkstra and explicit path scoring
 - add grid Dijkstra variants
 - add edge-list export/rebuild and induced subgraphs
+- add grid blocked/terrain export and rebuild
 - add tests
 - add CLI demo
 - add README
