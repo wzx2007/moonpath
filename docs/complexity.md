@@ -45,6 +45,8 @@ Let `N = width * height`.
 | --- | --- | --- | --- |
 | `Grid::points` | O(N) | O(N) | Enumerates every cell. |
 | `Grid::open_points` | O(N) | O(N) | Filters blocked cells. |
+| `Grid::set_cost` / `Grid::clear_cost` | O(1) average | O(1) | Updates one terrain override. |
+| `Grid::set_cost_rect` / `Grid::clear_cost_rect` | O(W * H) | O(1) | Updates terrain overrides across a rectangle. |
 | `Grid::neighbors4` / `Grid::neighbors8` | O(1) | O(1) | Checks a fixed number of candidate neighbors. |
 | `Grid::astar4` / `Grid::astar8` | O(N log N) worst case | O(N) | Uses Manhattan or Octile heuristics. |
 | `Grid::dijkstra4` / `Grid::dijkstra8` | O(N log N) | O(N) | Heuristic-free shortest path. |

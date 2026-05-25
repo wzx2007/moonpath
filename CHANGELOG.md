@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.16.0
+
+- Added `Grid::clear_cost` and `Grid::clear_cost_rect` for removing terrain-cost overrides from dynamic maps.
+- Updated grid bulk-update examples and complexity notes.
+
 ## 0.15.0
 
 - Added `Graph::sources`, `Graph::sinks`, and `Graph::isolated_nodes` for directed graph structure classification.

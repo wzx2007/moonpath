@@ -344,6 +344,11 @@ test "grid rectangle helpers update blocked cells and terrain costs" {
   assert_eq(grid.open_points().length(), 16)
   grid.set_cost_rect(@moonpath.Point::new(0, 0), 2, 2, 4)
   assert_true(grid.terrain_cost(@moonpath.Point::new(1, 1)) == Some(4))
+  assert_true(grid.clear_cost(@moonpath.Point::new(1, 1)))
+  assert_true(!grid.clear_cost(@moonpath.Point::new(1, 1)))
+  assert_true(grid.terrain_cost(@moonpath.Point::new(1, 1)) == Some(1))
+  assert_eq(grid.clear_cost_rect(@moonpath.Point::new(0, 0), 2, 1), 2)
+  assert_eq(grid.terrain_cells().length(), 1)
 }
 
 ///|

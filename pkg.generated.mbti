@@ -97,6 +97,8 @@ pub fn Grid::astar8_no_corner_cutting(Self, Point, Point) -> Path[Point]?
 pub fn Grid::block(Self, Point) -> Unit
 pub fn Grid::block_rect(Self, Point, Int, Int) -> Unit
 pub fn Grid::blocked_points(Self) -> Array[Point]
+pub fn Grid::clear_cost(Self, Point) -> Bool
+pub fn Grid::clear_cost_rect(Self, Point, Int, Int) -> Int
 pub fn Grid::contains(Self, Point) -> Bool
 pub fn Grid::dijkstra4(Self, Point, Point) -> Path[Point]?
 pub fn Grid::dijkstra8(Self, Point, Point) -> Path[Point]?

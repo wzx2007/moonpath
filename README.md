@@ -16,7 +16,7 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 - Path result helpers for node and edge counts.
 - A* search with custom heuristic functions.
 - Reachability, path existence, weak/strong connected components, connectivity predicates, graph transpose, degree queries, source/sink/isolated-node queries, graph eccentricity/diameter, topological sort, acyclicity checks, and topological layers.
-- Rectangular grid helpers with blocked cells, terrain costs, rectangular bulk updates, 4-neighbor, 8-neighbor, no-corner-cutting 8-neighbor pathfinding, and heuristic-free Dijkstra variants.
+- Rectangular grid helpers with blocked cells, terrain costs, terrain clearing, rectangular bulk updates, 4-neighbor, 8-neighbor, no-corner-cutting 8-neighbor pathfinding, and heuristic-free Dijkstra variants.
 - Grid export/rebuild helpers for blocked cells and terrain overrides.
 - Grid resizing for expanded or cropped map copies.
 - Grid line-of-sight checks and greedy path smoothing for reducing unnecessary waypoints.
@@ -204,6 +204,8 @@ test "bulk grid demo" {
   grid.block_rect(@moonpath.Point::new(1, 1), 3, 2)
   grid.unblock_rect(@moonpath.Point::new(2, 1), 1, 2)
   grid.set_cost_rect(@moonpath.Point::new(0, 0), 2, 2, 4)
+  assert_true(grid.clear_cost(@moonpath.Point::new(1, 1)))
+  assert_eq(grid.clear_cost_rect(@moonpath.Point::new(0, 0), 2, 1), 2)
   let rebuilt = @moonpath.Grid::from_parts(
     5,
     4,
@@ -274,7 +276,7 @@ moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 - `graph_search.mbt`: BFS, Dijkstra, bidirectional Dijkstra, A*, path scoring, and distance summaries.
 - `graph_traversal.mbt`: reachability, path existence, and DFS traversal.
 - `graph_components.mbt`: weak/strong components, connectivity predicates, and DAG helpers.
-- `grid.mbt`: grid construction, terrain, rectangular updates, grid neighbors, and grid pathfinding.
+- `grid.mbt`: grid construction, terrain updates, terrain clearing, rectangular updates, grid neighbors, and grid pathfinding.
 - `moonpath.mbt`: package-level entry point.
 - `moonpath_test.mbt`: blackbox behavior tests.
 - `cmd/main`: runnable example.

@@ -187,6 +187,37 @@ pub fn Grid::set_cost_rect(
 }
 
 ///|
+pub fn Grid::clear_cost(self : Grid, point : Point) -> Bool {
+  guard self.contains(point) else { abort("cost point is outside grid") }
+  guard self.terrain.contains(point) else { return false }
+  self.terrain.remove(point)
+  true
+}
+
+///|
+pub fn Grid::clear_cost_rect(
+  self : Grid,
+  top_left : Point,
+  width : Int,
+  height : Int,
+) -> Int {
+  self.assert_rect(top_left, width, height)
+  let mut removed = 0
+  let mut y = 0
+  while y < height {
+    let mut x = 0
+    while x < width {
+      if self.clear_cost(top_left.offset(x, y)) {
+        removed += 1
+      }
+      x += 1
+    }
+    y += 1
+  }
+  removed
+}
+
+///|
 pub fn Grid::terrain_cost(self : Grid, point : Point) -> Int? {
   guard self.contains(point) else { return None }
   Some(self.terrain.get_or_default(point, 1))
