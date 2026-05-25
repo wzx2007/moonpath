@@ -225,6 +225,7 @@ moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 - `.github/workflows/ci.yml`: CI for format, build, and tests.
 - `docs/project-proposal.md`: one-page contest proposal draft.
 - `docs/development-report.md`: completion report draft.
+- `docs/complexity.md`: complexity guide and API selection notes.
 - `docs/submission-checklist.md`: GitHub/GitLink submission checklist.
 - `docs/competition-requirements.md`: extracted requirements from the contest page.
 
