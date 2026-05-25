@@ -22,6 +22,18 @@ test "shortest path example" {
 
 ```mbt nocheck
 ///|
+test "grid resize example" {
+  let grid = @moonpath.Grid::new(4, 4)
+  grid.block(@moonpath.Point::new(1, 1))
+  grid.set_cost(@moonpath.Point::new(2, 2), 7)
+  let smaller = grid.resized(3, 3)
+  assert_true(smaller.is_blocked(@moonpath.Point::new(1, 1)))
+  assert_true(smaller.terrain_cost(@moonpath.Point::new(2, 2)) == Some(7))
+}
+```
+
+```mbt nocheck
+///|
 test "dynamic graph update example" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 1)

@@ -39,6 +39,22 @@ pub fn Grid::from_parts(
 }
 
 ///|
+pub fn Grid::resized(self : Grid, width : Int, height : Int) -> Grid {
+  let grid = Grid::new(width, height)
+  for point in self.blocked_points() {
+    if grid.contains(point) {
+      grid.block(point)
+    }
+  }
+  for cell in self.terrain_cells() {
+    if grid.contains(cell.point) {
+      grid.set_cost(cell.point, cell.cost)
+    }
+  }
+  grid
+}
+
+///|
 pub fn Point::new(x : Int, y : Int) -> Point {
   Point::{ x, y }
 }

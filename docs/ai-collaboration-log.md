@@ -10,7 +10,7 @@
 - 采用原创实现，不复制或移植特定开源项目代码。
 - 优先实现小而完整的核心 API，确保可构建、可测试、可演示。
 - 使用 `shortest_path` 复用 Dijkstra 与 A* 内核。
-- 扩展 DFS、bidirectional Dijkstra、path metrics、path scoring、dynamic graph mutation、edge-list export/rebuild、safe graph build、induced subgraph、path existence、weak/strong connected components、graph transpose、single-source distance map、all-pairs distance map、eccentricity、diameter、topological layers、terrain costs、grid Dijkstra、grid path validation、grid export/rebuild、line-of-sight、path smoothing、rectangular grid updates、no-corner-cutting pathfinding 和 grid-to-graph，让项目更接近可复用基础库。
+- 扩展 DFS、bidirectional Dijkstra、path metrics、path scoring、dynamic graph mutation、edge-list export/rebuild、safe graph build、induced subgraph、path existence、weak/strong connected components、graph transpose、single-source distance map、all-pairs distance map、eccentricity、diameter、topological layers、terrain costs、grid Dijkstra、grid path validation、grid export/rebuild、grid resizing、line-of-sight、path smoothing、rectangular grid updates、no-corner-cutting pathfinding 和 grid-to-graph，让项目更接近可复用基础库。
 - 将单一实现文件拆分为多个职责清晰的 `.mbt` 文件，降低维护成本并避免单文件过大导致平台同步失败。
 - 将必须由参赛者本人完成的账号、报名和 PDF 提交动作单独列入清单。
 
@@ -26,4 +26,4 @@ moon run cmd/main
 moon info
 ```
 
-测试结果：23 passed, 0 failed。
+测试结果：24 passed, 0 failed。

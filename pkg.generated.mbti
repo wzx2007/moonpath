@@ -109,6 +109,7 @@ pub fn Grid::path_cost8(Self, Array[Point]) -> Int?
 pub fn Grid::path_valid4(Self, Array[Point]) -> Bool
 pub fn Grid::path_valid8(Self, Array[Point]) -> Bool
 pub fn Grid::points(Self) -> Array[Point]
+pub fn Grid::resized(Self, Int, Int) -> Self
 pub fn Grid::set_cost(Self, Point, Int) -> Unit
 pub fn Grid::set_cost_rect(Self, Point, Int, Int, Int) -> Unit
 pub fn Grid::smooth_path(Self, Array[Point]) -> Array[Point]

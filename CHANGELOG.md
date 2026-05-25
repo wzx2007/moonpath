@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.13.0
+
+- Added `Grid::resized` to create expanded or cropped grid copies while preserving in-bounds blocked cells and terrain costs.
+- Expanded blackbox tests from 23 to 24 cases.
+
 ## 0.12.0
 
 - Added `Graph::remove_edge`, `Graph::clear_edges_from`, and `Graph::remove_node` for dynamic graph updates.

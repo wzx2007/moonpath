@@ -346,6 +346,26 @@ test "grid exports and rebuilds blocked and terrain cells" {
 }
 
 ///|
+test "grid resized preserves in-bounds blocked and terrain cells" {
+  let grid = @moonpath.Grid::new(4, 4)
+  grid.block(@moonpath.Point::new(1, 1))
+  grid.block(@moonpath.Point::new(3, 3))
+  grid.set_cost(@moonpath.Point::new(2, 2), 7)
+  grid.set_cost(@moonpath.Point::new(3, 3), 9)
+  let smaller = grid.resized(3, 3)
+  assert_eq(smaller.points().length(), 9)
+  assert_true(smaller.is_blocked(@moonpath.Point::new(1, 1)))
+  assert_true(!smaller.contains(@moonpath.Point::new(3, 3)))
+  assert_true(smaller.terrain_cost(@moonpath.Point::new(2, 2)) == Some(7))
+  assert_eq(smaller.terrain_cells().length(), 1)
+
+  let larger = smaller.resized(5, 5)
+  assert_eq(larger.points().length(), 25)
+  assert_true(larger.is_blocked(@moonpath.Point::new(1, 1)))
+  assert_true(larger.terrain_cost(@moonpath.Point::new(2, 2)) == Some(7))
+}
+
+///|
 test "grid smooth_path removes unnecessary waypoints" {
   let grid = @moonpath.Grid::new(5, 5)
   let start = @moonpath.Point::new(0, 0)
