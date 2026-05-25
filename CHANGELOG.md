@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.11.0
+
+- Added `Graph::try_from_arcs` for safe all-or-nothing graph construction from external edge lists.
+- Expanded blackbox tests from 21 to 22 cases.
+
 ## 0.10.0
 
 - Added `Path::node_count` and `Path::edge_count`.

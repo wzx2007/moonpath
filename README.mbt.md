@@ -22,6 +22,17 @@ test "shortest path example" {
 
 ```mbt nocheck
 ///|
+test "safe graph build example" {
+  let arcs = [
+    @moonpath.Arc::{ from: "A", to: "B", cost: 2 },
+    @moonpath.Arc::{ from: "B", to: "C", cost: 3 },
+  ]
+  assert_true(@moonpath.Graph::try_from_arcs(arcs) is Some(_))
+}
+```
+
+```mbt nocheck
+///|
 test "grid path validation example" {
   let grid = @moonpath.Grid::new(3, 3)
   guard grid.dijkstra4(@moonpath.Point::new(0, 0), @moonpath.Point::new(2, 2))

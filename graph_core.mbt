@@ -80,6 +80,14 @@ pub fn[N : Hash + Eq] Graph::from_arcs(arcs : Array[Arc[N]]) -> Graph[N] {
 }
 
 ///|
+pub fn[N : Hash + Eq] Graph::try_from_arcs(arcs : Array[Arc[N]]) -> Graph[N]? {
+  for arc in arcs {
+    guard arc.cost >= 0 else { return None }
+  }
+  Some(Graph::from_arcs(arcs))
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::induced_subgraph(
   self : Graph[N],
   keep : (N) -> Bool,

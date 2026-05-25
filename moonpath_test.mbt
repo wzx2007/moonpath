@@ -223,6 +223,27 @@ test "graph arcs and induced subgraphs support export workflows" {
 }
 
 ///|
+test "try_from_arcs rejects invalid bulk input without aborting" {
+  let good = [
+    @moonpath.Arc::{ from: "A", to: "B", cost: 1 },
+    @moonpath.Arc::{ from: "B", to: "C", cost: 2 },
+  ]
+  guard @moonpath.Graph::try_from_arcs(good) is Some(graph) else {
+    fail("expected graph from valid arcs")
+  }
+  assert_eq(graph.edge_count(), 2)
+  assert_true(graph.path_cost(["A", "B", "C"]) == Some(3))
+
+  let bad = [
+    @moonpath.Arc::{ from: "A", to: "B", cost: 1 },
+    @moonpath.Arc::{ from: "B", to: "C", cost: -1 },
+  ]
+  guard @moonpath.Graph::try_from_arcs(bad) is None else {
+    fail("invalid arcs should not build a graph")
+  }
+}
+
+///|
 test "weak and strong components differ on directed graphs" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 1)

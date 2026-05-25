@@ -73,6 +73,7 @@ pub fn[N : Hash + Eq] Graph::strongly_connected_components(Self[N]) -> Array[Arr
 pub fn[N : Hash + Eq] Graph::topological_layers(Self[N]) -> Array[Array[N]]?
 pub fn[N : Hash + Eq] Graph::topological_sort(Self[N]) -> Array[N]?
 pub fn[N : Hash + Eq] Graph::transpose(Self[N]) -> Self[N]
+pub fn[N : Hash + Eq] Graph::try_from_arcs(Array[Arc[N]]) -> Self[N]?
 pub fn[N : Hash + Eq] Graph::weakly_connected_components(Self[N]) -> Array[Array[N]]
 
 pub(all) struct Grid {
