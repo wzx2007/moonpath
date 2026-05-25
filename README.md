@@ -7,6 +7,7 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 ## Features
 
 - Directed weighted graph with explicit nodes and edges.
+- Edge-list export and reconstruction with `Arc[N]`, plus node-filtered induced subgraphs.
 - BFS and DFS traversal helpers for directed graphs.
 - Dijkstra and bidirectional Dijkstra shortest paths for non-negative weighted graphs, plus explicit path scoring, one-source distance maps, and all-pairs distance maps.
 - A* search with custom heuristic functions.
@@ -118,6 +119,20 @@ test "summary demo" {
   assert_eq(from_a.get_or_default("C", -1), 5)
   assert_true(graph.has_path("A", "C"))
   assert_true(graph.diameter() == Some(5))
+}
+```
+
+Edge-list workflows:
+
+```moonbit
+test "edge list demo" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 2)
+  graph.add_edge("B", "C", 3)
+  let rebuilt = @moonpath.Graph::from_arcs(graph.arcs())
+  assert_true(rebuilt.path_cost(["A", "B", "C"]) == Some(5))
+  let subgraph = graph.induced_subgraph(node => node != "C")
+  assert_true(!subgraph.contains_node("C"))
 }
 ```
 

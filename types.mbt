@@ -6,6 +6,14 @@ pub(all) struct Edge[N] {
 } derive(Eq, Debug)
 
 ///|
+/// A full directed edge record with source, target, and cost.
+pub(all) struct Arc[N] {
+  from : N
+  to : N
+  cost : Int
+} derive(Eq, Debug)
+
+///|
 /// A successful shortest-path query.
 pub(all) struct Path[N] {
   cost : Int

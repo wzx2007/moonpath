@@ -17,6 +17,12 @@ pub fn[N : Hash + Eq] shortest_path(N, N, (N) -> Array[Edge[N]], (N, N) -> Int) 
 // Errors
 
 // Types and methods
+pub(all) struct Arc[N] {
+  from : N
+  to : N
+  cost : Int
+} derive(Eq, @debug.Debug)
+
 pub(all) struct Edge[N] {
   to : N
   cost : Int
@@ -29,6 +35,7 @@ pub fn[N : Hash + Eq] Graph::add_edge(Self[N], N, N, Int) -> Unit
 pub fn[N : Hash + Eq] Graph::add_node(Self[N], N) -> Unit
 pub fn[N : Hash + Eq] Graph::add_undirected_edge(Self[N], N, N, Int) -> Unit
 pub fn[N : Hash + Eq] Graph::all_pairs_distances(Self[N]) -> @hashmap.HashMap[N, @hashmap.HashMap[N, Int]]
+pub fn[N] Graph::arcs(Self[N]) -> Array[Arc[N]]
 pub fn[N : Hash + Eq] Graph::astar(Self[N], N, N, (N, N) -> Int) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::bfs(Self[N], N, N) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::bidirectional_dijkstra(Self[N], N, N) -> Path[N]?
@@ -42,8 +49,10 @@ pub fn[N : Hash + Eq] Graph::dijkstra(Self[N], N, N) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::distances_from(Self[N], N) -> @hashmap.HashMap[N, Int]
 pub fn[N : Hash + Eq] Graph::eccentricity(Self[N], N) -> Int?
 pub fn[N] Graph::edge_count(Self[N]) -> Int
+pub fn[N : Hash + Eq] Graph::from_arcs(Array[Arc[N]]) -> Self[N]
 pub fn[N : Hash + Eq] Graph::has_path(Self[N], N, N) -> Bool
 pub fn[N : Eq] Graph::in_degree(Self[N], N) -> Int
+pub fn[N : Hash + Eq] Graph::induced_subgraph(Self[N], (N) -> Bool) -> Self[N]
 pub fn[N : Hash + Eq] Graph::is_acyclic(Self[N]) -> Bool
 pub fn[N : Hash + Eq] Graph::is_strongly_connected(Self[N]) -> Bool
 pub fn[N : Hash + Eq] Graph::is_weakly_connected(Self[N]) -> Bool

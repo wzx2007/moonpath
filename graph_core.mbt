@@ -60,6 +60,45 @@ pub fn[N] Graph::edge_count(self : Graph[N]) -> Int {
 }
 
 ///|
+pub fn[N] Graph::arcs(self : Graph[N]) -> Array[Arc[N]] {
+  let out : Array[Arc[N]] = []
+  self.adjacency.each((from, edges) => {
+    for edge in edges {
+      out.push(Arc::{ from, to: edge.to, cost: edge.cost })
+    }
+  })
+  out
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::from_arcs(arcs : Array[Arc[N]]) -> Graph[N] {
+  let graph = Graph::new()
+  for arc in arcs {
+    graph.add_edge(arc.from, arc.to, arc.cost)
+  }
+  graph
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::induced_subgraph(
+  self : Graph[N],
+  keep : (N) -> Bool,
+) -> Graph[N] {
+  let graph = Graph::new()
+  for node in self.nodes() {
+    if keep(node) {
+      graph.add_node(node)
+    }
+  }
+  for arc in self.arcs() {
+    if keep(arc.from) && keep(arc.to) {
+      graph.add_edge(arc.from, arc.to, arc.cost)
+    }
+  }
+  graph
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::contains_node(self : Graph[N], node : N) -> Bool {
   self.adjacency.contains(node)
 }

@@ -194,6 +194,28 @@ test "graph degree and transpose expose directed structure" {
 }
 
 ///|
+test "graph arcs and induced subgraphs support export workflows" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 2)
+  graph.add_edge("B", "C", 3)
+  graph.add_edge("A", "C", 10)
+  graph.add_node("D")
+  let arcs = graph.arcs()
+  assert_eq(arcs.length(), 3)
+  let rebuilt = @moonpath.Graph::from_arcs(arcs)
+  assert_eq(rebuilt.edge_count(), 3)
+  assert_true(rebuilt.path_cost(["A", "B", "C"]) == Some(5))
+
+  let subgraph = graph.induced_subgraph(node => node != "C")
+  assert_true(subgraph.contains_node("A"))
+  assert_true(subgraph.contains_node("B"))
+  assert_true(subgraph.contains_node("D"))
+  assert_true(subgraph.contains_edge("A", "B"))
+  assert_true(!subgraph.contains_node("C"))
+  assert_true(!subgraph.contains_edge("A", "C"))
+}
+
+///|
 test "weak and strong components differ on directed graphs" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 1)

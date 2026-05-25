@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.0
+
+- Added `Arc[N]` for full source-target-cost edge records.
+- Added `Graph::arcs` and `Graph::from_arcs` for edge-list export and reconstruction workflows.
+- Added `Graph::induced_subgraph` for node-filtered graph analysis.
+- Expanded blackbox tests from 18 to 19 cases.
+
 ## 0.6.0
 
 - Split the implementation into focused source files for graph core operations, graph search, graph traversal, graph components, grid utilities, and shared types.

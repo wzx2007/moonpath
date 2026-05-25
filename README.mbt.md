@@ -22,6 +22,19 @@ test "shortest path example" {
 
 ```mbt nocheck
 ///|
+test "edge list workflow example" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 2)
+  graph.add_edge("B", "C", 3)
+  let rebuilt = @moonpath.Graph::from_arcs(graph.arcs())
+  assert_true(rebuilt.path_cost(["A", "B", "C"]) == Some(5))
+  let subgraph = graph.induced_subgraph(node => node != "C")
+  assert_true(!subgraph.contains_node("C"))
+}
+```
+
+```mbt nocheck
+///|
 test "all pairs summary example" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 2)
