@@ -34,7 +34,7 @@ This document summarizes expected complexity and practical use cases for the cur
 | `Graph::dfs_preorder` / `Graph::dfs_postorder` | O(V + E) | O(V) | Iterative DFS. |
 | `Graph::sources` / `Graph::sinks` / `Graph::isolated_nodes` | O(V + E) | O(V) | Classifies nodes by incoming and outgoing degree. |
 | `Graph::weakly_connected_components` | O(V + E) | O(V + E) | Builds an undirected view. |
-| `Graph::strongly_connected_components` | O(V * (V + E)) | O(V + E) | Current implementation favors clarity over asymptotic optimality. |
+| `Graph::strongly_connected_components` | O(V + E) | O(V + E) | Kosaraju-style two-pass DFS over the graph and its transpose. |
 | `Graph::topological_sort` | O(V + E) | O(V) | Returns `None` on cycles. |
 | `Graph::topological_layers` | O(V + E) | O(V) | Groups independent DAG work items. |
 | `Graph::diameter` | O(V * (V + E) log V) | O(V) | Uses repeated single-source distances. |

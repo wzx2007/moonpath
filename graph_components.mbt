@@ -1,4 +1,10 @@
 ///|
+priv struct ComponentDfsFrame[N] {
+  node : N
+  expanded : Bool
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::connected_components(
   self : Graph[N],
 ) -> Array[Array[N]] {
@@ -41,24 +47,58 @@ pub fn[N : Hash + Eq] Graph::is_weakly_connected(self : Graph[N]) -> Bool {
 pub fn[N : Hash + Eq] Graph::strongly_connected_components(
   self : Graph[N],
 ) -> Array[Array[N]] {
-  let reversed = self.transpose()
-  let assigned : @hashset.HashSet[N] = @hashset.HashSet([])
-  let components : Array[Array[N]] = []
+  let visited : @hashset.HashSet[N] = @hashset.HashSet([])
+  let order : Array[N] = []
   for node in self.nodes() {
-    if !assigned.contains(node) {
-      let backward : @hashset.HashSet[N] = @hashset.HashSet([])
-      for item in reversed.reachable(node) {
-        backward.add(item)
+    if visited.contains(node) {
+      continue
+    }
+    let stack : Array[ComponentDfsFrame[N]] = [
+      ComponentDfsFrame::{ node, expanded: false },
+    ]
+    while stack.length() > 0 {
+      let frame = stack.unsafe_pop()
+      if frame.expanded {
+        order.push(frame.node)
+        continue
       }
-      let component : Array[N] = []
-      for item in self.reachable(node) {
-        if backward.contains(item) && !assigned.contains(item) {
-          assigned.add(item)
-          component.push(item)
+      if visited.contains(frame.node) {
+        continue
+      }
+      visited.add(frame.node)
+      stack.push(ComponentDfsFrame::{ node: frame.node, expanded: true })
+      for edge in self.neighbors(frame.node).rev() {
+        if !visited.contains(edge.to) {
+          stack.push(ComponentDfsFrame::{ node: edge.to, expanded: false })
         }
       }
-      components.push(component)
     }
+  }
+
+  let reversed = self.transpose()
+  let components : Array[Array[N]] = []
+  let assigned : @hashset.HashSet[N] = @hashset.HashSet([])
+  let mut index = order.length()
+  while index > 0 {
+    index -= 1
+    let node = order[index]
+    if assigned.contains(node) {
+      continue
+    }
+    let component : Array[N] = []
+    let stack : Array[N] = [node]
+    assigned.add(node)
+    while stack.length() > 0 {
+      let current = stack.unsafe_pop()
+      component.push(current)
+      for edge in reversed.neighbors(current) {
+        if !assigned.contains(edge.to) {
+          assigned.add(edge.to)
+          stack.push(edge.to)
+        }
+      }
+    }
+    components.push(component)
   }
   components
 }

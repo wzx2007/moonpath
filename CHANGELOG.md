@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.20.0
+
+- Reworked `Graph::strongly_connected_components` to use a linear two-pass DFS implementation.
+- Updated complexity notes for strong component analysis.
+
 ## 0.19.0
 
 - Added `Graph::reachable_subgraph` to extract the directed subgraph reachable from a start node.
