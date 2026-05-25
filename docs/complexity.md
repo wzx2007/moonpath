@@ -31,6 +31,7 @@ This document summarizes expected complexity and practical use cases for the cur
 | API | Time | Space | Notes |
 | --- | --- | --- | --- |
 | `Graph::reachable` | O(V + E) | O(V) | Directed reachability. |
+| `Graph::ancestors` / `Graph::descendants` | O(V + E) | O(V + E) | Traverses the graph or its transpose and excludes the query node. |
 | `Graph::reachable_subgraph` | O(V + E) | O(V + E) | Builds a graph containing only nodes reachable from one start node. |
 | `Graph::bfs_tree` | O(V + E) | O(V) | Exports first-discovery BFS tree edges from one start node. |
 | `Graph::dfs_preorder` / `Graph::dfs_postorder` | O(V + E) | O(V) | Iterative DFS. |

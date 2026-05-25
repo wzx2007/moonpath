@@ -39,6 +39,18 @@ pub fn[N : Hash + Eq] Graph::has_path(
 }
 
 ///|
+pub fn[N : Hash + Eq] Graph::descendants(self : Graph[N], node : N) -> Array[N] {
+  guard self.contains_node(node) else { return [] }
+  self.reachable_excluding(node)
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::ancestors(self : Graph[N], node : N) -> Array[N] {
+  guard self.contains_node(node) else { return [] }
+  self.transpose().reachable_excluding(node)
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::bfs_tree(
   self : Graph[N],
   start : N,
@@ -99,6 +111,20 @@ pub fn[N : Hash + Eq] Graph::dfs_preorder(
     }
   }
   order
+}
+
+///|
+fn[N : Hash + Eq] Graph::reachable_excluding(
+  self : Graph[N],
+  start : N,
+) -> Array[N] {
+  let out : Array[N] = []
+  for node in self.reachable(start) {
+    if node != start {
+      out.push(node)
+    }
+  }
+  out
 }
 
 ///|

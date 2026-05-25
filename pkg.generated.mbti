@@ -40,6 +40,7 @@ pub fn[N : Hash + Eq] Graph::add_edge(Self[N], N, N, Int) -> Unit
 pub fn[N : Hash + Eq] Graph::add_node(Self[N], N) -> Unit
 pub fn[N : Hash + Eq] Graph::add_undirected_edge(Self[N], N, N, Int) -> Unit
 pub fn[N : Hash + Eq] Graph::all_pairs_distances(Self[N]) -> @hashmap.HashMap[N, @hashmap.HashMap[N, Int]]
+pub fn[N : Hash + Eq] Graph::ancestors(Self[N], N) -> Array[N]
 pub fn[N] Graph::arcs(Self[N]) -> Array[Arc[N]]
 pub fn[N : Hash + Eq] Graph::astar(Self[N], N, N, (N, N) -> Int) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::bfs(Self[N], N, N) -> Path[N]?
@@ -50,6 +51,7 @@ pub fn[N : Hash + Eq] Graph::connected_components(Self[N]) -> Array[Array[N]]
 pub fn[N : Hash + Eq] Graph::contains_edge(Self[N], N, N) -> Bool
 pub fn[N : Hash + Eq] Graph::contains_node(Self[N], N) -> Bool
 pub fn[N : Hash + Eq] Graph::dag_longest_path(Self[N], N, N) -> Path[N]?
+pub fn[N : Hash + Eq] Graph::descendants(Self[N], N) -> Array[N]
 pub fn[N : Hash + Eq] Graph::dfs_postorder(Self[N], N) -> Array[N]
 pub fn[N : Hash + Eq] Graph::dfs_preorder(Self[N], N) -> Array[N]
 pub fn[N : Hash + Eq] Graph::diameter(Self[N]) -> Int?

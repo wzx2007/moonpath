@@ -15,7 +15,7 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 - Dijkstra and bidirectional Dijkstra shortest paths for non-negative weighted graphs, shortest-path tree export, DAG longest paths for critical-path analysis, plus explicit path scoring, one-source distance maps, and all-pairs distance maps.
 - Path result helpers for node and edge counts.
 - A* search with custom heuristic functions.
-- Reachability, path existence, weak/strong connected components, connectivity predicates, graph transpose, degree queries, source/sink/isolated-node queries, graph eccentricity/diameter, topological sort, acyclicity checks, and topological layers.
+- Reachability, ancestors/descendants, path existence, weak/strong connected components, connectivity predicates, graph transpose, degree queries, source/sink/isolated-node queries, graph eccentricity/diameter, topological sort, acyclicity checks, and topological layers.
 - Rectangular grid helpers with blocked cells, obstacle inflation, terrain costs, terrain clearing, rectangular bulk updates, reachable-point/region analysis, 4-neighbor, 8-neighbor, no-corner-cutting 8-neighbor pathfinding, and heuristic-free Dijkstra variants.
 - Grid export/rebuild helpers for blocked cells and terrain overrides.
 - Grid resizing for expanded or cropped map copies.
@@ -98,6 +98,18 @@ test "component demo" {
   graph.add_edge("B", "C", 1)
   assert_eq(graph.weakly_connected_components().length(), 1)
   assert_eq(graph.strongly_connected_components().length(), 2)
+}
+```
+
+Dependency direction:
+
+```moonbit
+test "dependency direction demo" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("parse", "compile", 1)
+  graph.add_edge("compile", "package", 1)
+  assert_true(graph.descendants("parse") == ["compile", "package"])
+  assert_true(graph.ancestors("package").length() == 2)
 }
 ```
 
@@ -370,7 +382,7 @@ moonpath bench: nodes=571, edges=2122, open=571, components=1, cost=48, steps=48
 - `types.mbt`: public data types.
 - `graph_core.mbt`: graph construction, edge queries, degree/source/sink queries, and transpose.
 - `graph_search.mbt`: BFS, Dijkstra, bidirectional Dijkstra, A*, path scoring, and distance summaries.
-- `graph_traversal.mbt`: reachability, reachable subgraphs, path existence, BFS tree export, and DFS traversal.
+- `graph_traversal.mbt`: reachability, ancestors/descendants, reachable subgraphs, path existence, BFS tree export, and DFS traversal.
 - `graph_components.mbt`: weak/strong components, connectivity predicates, and DAG helpers.
 - `grid.mbt`: grid construction, terrain updates, terrain clearing, obstacle inflation, reachable regions, rectangular updates, grid neighbors, and grid pathfinding.
 - `moonpath.mbt`: package-level entry point.

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.26.0
+
+- Added `Graph::ancestors` and `Graph::descendants` for dependency-direction analysis.
+- Expanded blackbox tests from 33 to 34 cases.
+
 ## 0.25.0
 
 - Added `Graph::shortest_path_tree` to export Dijkstra parent edges from one start node.

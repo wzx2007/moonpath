@@ -202,6 +202,17 @@ test "shortest path tree example" {
 
 ```mbt nocheck
 ///|
+test "dependency direction example" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("parse", "compile", 1)
+  graph.add_edge("compile", "package", 1)
+  assert_true(graph.descendants("parse") == ["compile", "package"])
+  assert_true(graph.ancestors("package").length() == 2)
+}
+```
+
+```mbt nocheck
+///|
 test "distance and dag layer example" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("parse", "lint", 1)

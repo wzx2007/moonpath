@@ -174,6 +174,26 @@ test "dfs traversal and path existence inspect directed reachability" {
 }
 
 ///|
+test "ancestors and descendants inspect dependency direction" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("parse", "compile", 1)
+  graph.add_edge("compile", "package", 1)
+  graph.add_edge("lint", "package", 1)
+  graph.add_edge("package", "deploy", 1)
+  let ancestors = graph.ancestors("package")
+  let descendants = graph.descendants("compile")
+  assert_true(contains(ancestors, "parse"))
+  assert_true(contains(ancestors, "compile"))
+  assert_true(contains(ancestors, "lint"))
+  assert_true(!contains(ancestors, "package"))
+  assert_true(contains(descendants, "package"))
+  assert_true(contains(descendants, "deploy"))
+  assert_true(!contains(descendants, "compile"))
+  assert_true(graph.ancestors("missing").length() == 0)
+  assert_true(graph.descendants("missing").length() == 0)
+}
+
+///|
 test "bfs_tree exports first-discovery traversal edges" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 1)
