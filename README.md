@@ -147,7 +147,13 @@ moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 
 ## Repository Layout
 
-- `moonpath.mbt`: public library API and implementation.
+- `types.mbt`: public data types.
+- `graph_core.mbt`: graph construction, edge queries, degree queries, and transpose.
+- `graph_search.mbt`: BFS, Dijkstra, bidirectional Dijkstra, A*, path scoring, and distance summaries.
+- `graph_traversal.mbt`: reachability, path existence, and DFS traversal.
+- `graph_components.mbt`: weak/strong components, connectivity predicates, and DAG helpers.
+- `grid.mbt`: grid construction, terrain, rectangular updates, grid neighbors, and grid pathfinding.
+- `moonpath.mbt`: package-level entry point.
 - `moonpath_test.mbt`: blackbox behavior tests.
 - `cmd/main`: runnable example.
 - `.github/workflows/ci.yml`: CI for format, build, and tests.

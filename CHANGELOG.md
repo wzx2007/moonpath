@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.0
+
+- Split the implementation into focused source files for graph core operations, graph search, graph traversal, graph components, grid utilities, and shared types.
+- Reduced the root `moonpath.mbt` file to a package-level entry point so the library is easier to maintain and sync across hosting platforms.
+
 ## 0.5.0
 
 - Added `Graph::bidirectional_dijkstra` for shortest-path queries that search from both endpoints.
