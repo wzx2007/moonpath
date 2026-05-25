@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.22.0
+
+- Added `cmd/bench`, a deterministic benchmark smoke command for a larger grid-to-graph pathfinding scenario.
+- Extended CI and local verification to run both the demo and benchmark smoke commands.
+
 ## 0.21.0
 
 - Added `Graph::dag_longest_path` for weighted critical-path queries on acyclic graphs.

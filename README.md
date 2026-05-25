@@ -326,6 +326,18 @@ Expected output:
 moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 ```
 
+Run the benchmark smoke command:
+
+```powershell
+moon run cmd/bench
+```
+
+Expected output:
+
+```text
+moonpath bench: nodes=571, edges=2122, open=571, components=1, cost=48, steps=48, visited=567
+```
+
 ## Repository Layout
 
 - `types.mbt`: public data types.
@@ -337,7 +349,8 @@ moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 - `moonpath.mbt`: package-level entry point.
 - `moonpath_test.mbt`: blackbox behavior tests.
 - `cmd/main`: runnable example.
-- `.github/workflows/ci.yml`: CI for format, build, and tests.
+- `cmd/bench`: deterministic benchmark smoke scenario.
+- `.github/workflows/ci.yml`: CI for format, build, tests, demo, and benchmark smoke.
 - `docs/project-proposal.md`: one-page contest proposal draft.
 - `docs/development-report.md`: completion report draft.
 - `docs/complexity.md`: complexity guide and API selection notes.

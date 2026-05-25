@@ -21,3 +21,7 @@ jobs:
         run: moon build
       - name: Test
         run: moon test
+      - name: Run demo
+        run: moon run cmd/main
+      - name: Run benchmark smoke
+        run: moon run cmd/bench

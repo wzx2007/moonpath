@@ -35,6 +35,7 @@ moon fmt --check
 moon test
 moon build
 moon run cmd/main
+moon run cmd/bench
 moon info
 ```
 
@@ -43,6 +44,7 @@ moon info
 ```text
 Total tests: 29, passed: 29, failed: 0.
 moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
+moonpath bench: nodes=571, edges=2122, open=571, components=1, cost=48, steps=48, visited=567
 ```
 
 ## 工程质量说明
