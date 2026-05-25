@@ -15,7 +15,7 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 - Dijkstra and bidirectional Dijkstra shortest paths for non-negative weighted graphs, plus explicit path scoring, one-source distance maps, and all-pairs distance maps.
 - Path result helpers for node and edge counts.
 - A* search with custom heuristic functions.
-- Reachability, path existence, weak/strong connected components, connectivity predicates, graph transpose, degree queries, graph eccentricity/diameter, topological sort, acyclicity checks, and topological layers.
+- Reachability, path existence, weak/strong connected components, connectivity predicates, graph transpose, degree queries, source/sink/isolated-node queries, graph eccentricity/diameter, topological sort, acyclicity checks, and topological layers.
 - Rectangular grid helpers with blocked cells, terrain costs, rectangular bulk updates, 4-neighbor, 8-neighbor, no-corner-cutting 8-neighbor pathfinding, and heuristic-free Dijkstra variants.
 - Grid export/rebuild helpers for blocked cells and terrain overrides.
 - Grid resizing for expanded or cropped map copies.
@@ -182,6 +182,20 @@ test "weight summary demo" {
 }
 ```
 
+Directed graph structure queries:
+
+```moonbit
+test "structure query demo" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("parse", "compile", 1)
+  graph.add_edge("compile", "package", 1)
+  graph.add_node("docs")
+  assert_true(graph.sources().length() == 2)
+  assert_true(graph.sinks().length() == 2)
+  assert_true(graph.isolated_nodes() == ["docs"])
+}
+```
+
 Bulk grid updates:
 
 ```moonbit
@@ -256,7 +270,7 @@ moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 ## Repository Layout
 
 - `types.mbt`: public data types.
-- `graph_core.mbt`: graph construction, edge queries, degree queries, and transpose.
+- `graph_core.mbt`: graph construction, edge queries, degree/source/sink queries, and transpose.
 - `graph_search.mbt`: BFS, Dijkstra, bidirectional Dijkstra, A*, path scoring, and distance summaries.
 - `graph_traversal.mbt`: reachability, path existence, and DFS traversal.
 - `graph_components.mbt`: weak/strong components, connectivity predicates, and DAG helpers.

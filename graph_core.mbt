@@ -229,6 +229,57 @@ pub fn[N : Eq] Graph::in_degree(self : Graph[N], node : N) -> Int {
 }
 
 ///|
+pub fn[N : Hash + Eq] Graph::sources(self : Graph[N]) -> Array[N] {
+  let incoming = self.in_degrees()
+  let out : Array[N] = []
+  for node in self.nodes() {
+    if incoming.get_or_default(node, 0) == 0 {
+      out.push(node)
+    }
+  }
+  out
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::sinks(self : Graph[N]) -> Array[N] {
+  let out : Array[N] = []
+  for node in self.nodes() {
+    if self.out_degree(node) == 0 {
+      out.push(node)
+    }
+  }
+  out
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::isolated_nodes(self : Graph[N]) -> Array[N] {
+  let incoming = self.in_degrees()
+  let out : Array[N] = []
+  for node in self.nodes() {
+    if incoming.get_or_default(node, 0) == 0 && self.out_degree(node) == 0 {
+      out.push(node)
+    }
+  }
+  out
+}
+
+///|
+fn[N : Hash + Eq] Graph::in_degrees(
+  self : Graph[N],
+) -> @hashmap.HashMap[N, Int] {
+  let counts : @hashmap.HashMap[N, Int] = @hashmap.HashMap([])
+  for node in self.nodes() {
+    counts.set(node, 0)
+  }
+  self.adjacency.each((_from, edges) => {
+    for edge in edges {
+      counts.set(edge.to, counts.get_or_default(edge.to, 0) + 1)
+    }
+  })
+  counts
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::transpose(self : Graph[N]) -> Graph[N] {
   let reversed = Graph::new()
   for node in self.nodes() {

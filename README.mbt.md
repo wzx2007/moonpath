@@ -34,6 +34,19 @@ test "weighted graph summary example" {
 
 ```mbt nocheck
 ///|
+test "directed graph structure example" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("parse", "compile", 1)
+  graph.add_edge("compile", "package", 1)
+  graph.add_node("docs")
+  assert_true(graph.sources().length() == 2)
+  assert_true(graph.sinks().length() == 2)
+  assert_true(graph.isolated_nodes() == ["docs"])
+}
+```
+
+```mbt nocheck
+///|
 test "grid resize example" {
   let grid = @moonpath.Grid::new(4, 4)
   grid.block(@moonpath.Point::new(1, 1))

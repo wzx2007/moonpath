@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.15.0
+
+- Added `Graph::sources`, `Graph::sinks`, and `Graph::isolated_nodes` for directed graph structure classification.
+- Extended graph structure tests and documentation for the new node classification APIs.
+
 ## 0.14.0
 
 - Added `Graph::total_edge_cost`, `Graph::min_edge_cost`, and `Graph::max_edge_cost` for weighted graph summaries.

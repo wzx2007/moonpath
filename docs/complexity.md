@@ -30,6 +30,7 @@ This document summarizes expected complexity and practical use cases for the cur
 | --- | --- | --- | --- |
 | `Graph::reachable` | O(V + E) | O(V) | Directed reachability. |
 | `Graph::dfs_preorder` / `Graph::dfs_postorder` | O(V + E) | O(V) | Iterative DFS. |
+| `Graph::sources` / `Graph::sinks` / `Graph::isolated_nodes` | O(V + E) | O(V) | Classifies nodes by incoming and outgoing degree. |
 | `Graph::weakly_connected_components` | O(V + E) | O(V + E) | Builds an undirected view. |
 | `Graph::strongly_connected_components` | O(V * (V + E)) | O(V + E) | Current implementation favors clarity over asymptotic optimality. |
 | `Graph::topological_sort` | O(V + E) | O(V) | Returns `None` on cycles. |
