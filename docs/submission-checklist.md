@@ -63,5 +63,5 @@ moon info
 
 ## 验收风险
 
-- GitHub 与 GitLink 已公开；GitLink 为 GitHub 镜像仓库，需在最终提交前确认同步状态正常。
+- GitHub 与 GitLink 已公开；需在最终提交前确认两侧内容同步状态正常。
 - 当前代码规模是可运行 MVP，距离赛题提到的 4-10k 有效 MoonBit 代码行数仍需要扩展功能、测试和文档示例。
