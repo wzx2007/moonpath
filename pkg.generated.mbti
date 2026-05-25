@@ -78,6 +78,7 @@ pub fn[N : Hash + Eq] Graph::reachable_subgraph(Self[N], N) -> Self[N]
 pub fn[N : Hash + Eq] Graph::remove_edge(Self[N], N, N) -> Int
 pub fn[N : Hash + Eq] Graph::remove_node(Self[N], N) -> Bool
 pub fn[N : Hash + Eq] Graph::shortest_distance(Self[N], N, N) -> Int?
+pub fn[N : Hash + Eq] Graph::shortest_path_tree(Self[N], N) -> Array[Arc[N]]
 pub fn[N : Hash + Eq] Graph::sinks(Self[N]) -> Array[N]
 pub fn[N : Hash + Eq] Graph::sources(Self[N]) -> Array[N]
 pub fn[N : Hash + Eq] Graph::strongly_connected_components(Self[N]) -> Array[Array[N]]

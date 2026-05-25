@@ -77,6 +77,23 @@ test "distances_from computes all reachable weighted costs" {
 }
 
 ///|
+test "shortest_path_tree exports Dijkstra parent edges" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 5)
+  graph.add_edge("A", "C", 2)
+  graph.add_edge("C", "B", 1)
+  graph.add_edge("B", "D", 4)
+  graph.add_node("Z")
+  let tree = graph.shortest_path_tree("A")
+  assert_eq(tree.length(), 3)
+  assert_true(contains_arc(tree, "A", "C", 2))
+  assert_true(contains_arc(tree, "C", "B", 1))
+  assert_true(contains_arc(tree, "B", "D", 4))
+  assert_true(!contains_arc(tree, "A", "B", 5))
+  assert_true(graph.shortest_path_tree("missing").length() == 0)
+}
+
+///|
 test "all pairs distances and graph diameter summarize shortest paths" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 2)

@@ -12,7 +12,7 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 - Edge-list export and reconstruction with `Arc[N]`, plus node-filtered induced subgraphs and reachable subgraphs.
 - Safe all-or-nothing graph construction from external edge lists with `try_from_arcs`.
 - BFS, BFS-tree, and DFS traversal helpers for directed graphs.
-- Dijkstra and bidirectional Dijkstra shortest paths for non-negative weighted graphs, DAG longest paths for critical-path analysis, plus explicit path scoring, one-source distance maps, and all-pairs distance maps.
+- Dijkstra and bidirectional Dijkstra shortest paths for non-negative weighted graphs, shortest-path tree export, DAG longest paths for critical-path analysis, plus explicit path scoring, one-source distance maps, and all-pairs distance maps.
 - Path result helpers for node and edge counts.
 - A* search with custom heuristic functions.
 - Reachability, path existence, weak/strong connected components, connectivity predicates, graph transpose, degree queries, source/sink/isolated-node queries, graph eccentricity/diameter, topological sort, acyclicity checks, and topological layers.
@@ -144,6 +144,19 @@ test "summary demo" {
   assert_eq(from_a.get_or_default("C", -1), 5)
   assert_true(graph.has_path("A", "C"))
   assert_true(graph.diameter() == Some(5))
+}
+```
+
+Shortest-path trees:
+
+```moonbit
+test "shortest path tree demo" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 5)
+  graph.add_edge("A", "C", 2)
+  graph.add_edge("C", "B", 1)
+  let tree = graph.shortest_path_tree("A")
+  assert_eq(tree.length(), 2)
 }
 ```
 

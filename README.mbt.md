@@ -190,6 +190,18 @@ test "all pairs summary example" {
 
 ```mbt nocheck
 ///|
+test "shortest path tree example" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 5)
+  graph.add_edge("A", "C", 2)
+  graph.add_edge("C", "B", 1)
+  let tree = graph.shortest_path_tree("A")
+  assert_eq(tree.length(), 2)
+}
+```
+
+```mbt nocheck
+///|
 test "distance and dag layer example" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("parse", "lint", 1)

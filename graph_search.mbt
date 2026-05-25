@@ -318,6 +318,55 @@ pub fn[N : Hash + Eq] Graph::distances_from(
 }
 
 ///|
+pub fn[N : Hash + Eq] Graph::shortest_path_tree(
+  self : Graph[N],
+  start : N,
+) -> Array[Arc[N]] {
+  guard self.contains_node(start) else { return [] }
+  let frontier = PriorityQueue::new()
+  let dist : @hashmap.HashMap[N, Int] = @hashmap.HashMap([])
+  let parents : @hashmap.HashMap[N, Arc[N]] = @hashmap.HashMap([])
+  let visited : @hashset.HashSet[N] = @hashset.HashSet([])
+  frontier.push(start, 0)
+  dist.set(start, 0)
+  while frontier.pop_min() is Some(item) {
+    let current = item.node
+    if visited.contains(current) {
+      continue
+    }
+    visited.add(current)
+    let current_cost = dist.get_or_default(current, 0)
+    for edge in self.neighbors(current) {
+      let next_cost = current_cost + edge.cost
+      match dist.get(edge.to) {
+        Some(existing) =>
+          if next_cost < existing {
+            dist.set(edge.to, next_cost)
+            parents.set(edge.to, Arc::{
+              from: current,
+              to: edge.to,
+              cost: edge.cost,
+            })
+            frontier.push(edge.to, next_cost)
+          }
+        None => {
+          dist.set(edge.to, next_cost)
+          parents.set(edge.to, Arc::{
+            from: current,
+            to: edge.to,
+            cost: edge.cost,
+          })
+          frontier.push(edge.to, next_cost)
+        }
+      }
+    }
+  }
+  let tree : Array[Arc[N]] = []
+  parents.each((_node, arc) => tree.push(arc))
+  tree
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::shortest_distance(
   self : Graph[N],
   start : N,

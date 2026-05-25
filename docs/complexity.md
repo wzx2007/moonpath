@@ -22,6 +22,7 @@ This document summarizes expected complexity and practical use cases for the cur
 | `Graph::bidirectional_dijkstra` | O((V + E) log V) worst case | O(V) | Often reduces explored nodes when a path exists between distant endpoints. |
 | `Graph::astar` | O((V + E) log V) worst case | O(V) | Faster when the heuristic is admissible and informative. |
 | `Graph::distances_from` | O((V + E) log V) | O(V) | Computes distances from one source to all reachable nodes. |
+| `Graph::shortest_path_tree` | O((V + E) log V) | O(V) | Exports Dijkstra parent edges for reachable nodes. |
 | `Graph::all_pairs_distances` | O(V * (V + E) log V) | O(V^2) worst case | Runs Dijkstra from every node. |
 | `Graph::dag_longest_path` | O(V + E) | O(V) | Returns `None` if the graph has a cycle or the goal is unreachable. |
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.25.0
+
+- Added `Graph::shortest_path_tree` to export Dijkstra parent edges from one start node.
+- Expanded blackbox tests from 32 to 33 cases.
+
 ## 0.24.0
 
 - Added `Grid::reachable_points4`, `Grid::reachable_points8`, `Grid::open_regions4`, and `Grid::open_regions8` for map connectivity analysis.
