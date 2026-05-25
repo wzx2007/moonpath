@@ -1,0 +1,7 @@
+import {
+  "moonbit-contest/moonpath",
+}
+
+options(
+  "is-main": true,
+)
