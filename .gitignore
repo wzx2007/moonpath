@@ -1,0 +1,10 @@
+/_build/
+/.mooncakes/
+/.moon/
+/trace.json
+*.wasm
+*.wat
+*.js
+*.map
+*.exe
+*.zip
