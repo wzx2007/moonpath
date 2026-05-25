@@ -31,7 +31,9 @@ moon info
 ```text
 Total tests: 34, passed: 34, failed: 0.
 moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
-moonpath bench: nodes=571, edges=2122, open=571, components=1, cost=48, steps=48, visited=567
+moonpath bench grid: nodes=571, edges=2122, open=571, components=1, cost=48, steps=48, visited=567
+moonpath bench sparse-dag: nodes=80, edges=226, layers=80, critical=79, steps=79
+moonpath bench dense: nodes=36, edges=216, reachable=36, tree=35, diameter=35
 ```
 
 ## 参赛者提交前必须确认

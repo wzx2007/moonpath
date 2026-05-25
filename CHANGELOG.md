@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.27.0
+
+- Expanded `cmd/bench` from one grid smoke scenario to deterministic grid, sparse DAG, and dense graph benchmark summaries.
+- Updated README and validation docs with the new benchmark output.
+
 ## 0.26.0
 
 - Added `Graph::ancestors` and `Graph::descendants` for dependency-direction analysis.

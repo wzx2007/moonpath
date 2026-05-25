@@ -44,7 +44,9 @@ moon info
 ```text
 Total tests: 34, passed: 34, failed: 0.
 moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
-moonpath bench: nodes=571, edges=2122, open=571, components=1, cost=48, steps=48, visited=567
+moonpath bench grid: nodes=571, edges=2122, open=571, components=1, cost=48, steps=48, visited=567
+moonpath bench sparse-dag: nodes=80, edges=226, layers=80, critical=79, steps=79
+moonpath bench dense: nodes=36, edges=216, reachable=36, tree=35, diameter=35
 ```
 
 ## 工程质量说明
@@ -59,11 +61,11 @@ moonpath bench: nodes=571, edges=2122, open=571, components=1, cost=48, steps=48
 
 - 当前不支持负权最短路；如需支持可补充 Bellman-Ford 并调整权重约束。
 - 当前 JSON 导入导出尚未实现。
-- 随机性质测试和正式计时 benchmark 尚未加入；当前已提供确定性不变量测试和 benchmark smoke。
+- 随机性质测试和正式计时 benchmark 尚未加入；当前已提供确定性不变量测试和覆盖 grid、sparse DAG、dense graph 的 benchmark smoke。
 
 ## 后续计划
 
 - 增加 JSON 格式导入导出。
 - 增加 bidirectional A*。
-- 将确定性不变量测试扩展为随机图/grid 性质测试，并补充正式计时 benchmark。
+- 将确定性不变量测试扩展为随机图/grid 性质测试，并为 benchmark smoke 补充 wall-clock timing。
 - 扩展示例，覆盖游戏地图、依赖分析和流程编排场景。

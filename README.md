@@ -374,7 +374,9 @@ moon run cmd/bench
 Expected output:
 
 ```text
-moonpath bench: nodes=571, edges=2122, open=571, components=1, cost=48, steps=48, visited=567
+moonpath bench grid: nodes=571, edges=2122, open=571, components=1, cost=48, steps=48, visited=567
+moonpath bench sparse-dag: nodes=80, edges=226, layers=80, critical=79, steps=79
+moonpath bench dense: nodes=36, edges=216, reachable=36, tree=35, diameter=35
 ```
 
 ## Repository Layout
@@ -388,7 +390,7 @@ moonpath bench: nodes=571, edges=2122, open=571, components=1, cost=48, steps=48
 - `moonpath.mbt`: package-level entry point.
 - `moonpath_test.mbt`: blackbox behavior tests.
 - `cmd/main`: runnable example.
-- `cmd/bench`: deterministic benchmark smoke scenario.
+- `cmd/bench`: deterministic benchmark smoke scenarios for grid, sparse DAG, and dense graph workloads.
 - `.github/workflows/ci.yml`: CI for format, build, tests, demo, and benchmark smoke.
 - `docs/project-proposal.md`: one-page contest proposal draft.
 - `docs/development-report.md`: completion report draft.
@@ -401,7 +403,7 @@ moonpath bench: nodes=571, edges=2122, open=571, components=1, cost=48, steps=48
 - Add bidirectional A*.
 - Add graph serialization for JSON interchange.
 - Expand deterministic invariant tests into randomized graph and grid property suites.
-- Add measured benchmarks for dense graphs, sparse graphs, and large tile maps.
+- Add wall-clock timing output for the deterministic benchmark scenarios.
 - Publish the package after the public repository is pushed.
 
 ## License
