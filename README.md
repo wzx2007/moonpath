@@ -11,7 +11,7 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 - Weighted graph summaries for total, minimum, and maximum edge cost.
 - Edge-list export and reconstruction with `Arc[N]`, plus node-filtered induced subgraphs.
 - Safe all-or-nothing graph construction from external edge lists with `try_from_arcs`.
-- BFS and DFS traversal helpers for directed graphs.
+- BFS, BFS-tree, and DFS traversal helpers for directed graphs.
 - Dijkstra and bidirectional Dijkstra shortest paths for non-negative weighted graphs, plus explicit path scoring, one-source distance maps, and all-pairs distance maps.
 - Path result helpers for node and edge counts.
 - A* search with custom heuristic functions.
@@ -127,6 +127,19 @@ test "summary demo" {
   assert_eq(from_a.get_or_default("C", -1), 5)
   assert_true(graph.has_path("A", "C"))
   assert_true(graph.diameter() == Some(5))
+}
+```
+
+Traversal tree export:
+
+```moonbit
+test "bfs tree demo" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 1)
+  graph.add_edge("A", "C", 2)
+  graph.add_edge("B", "D", 3)
+  let tree = graph.bfs_tree("A")
+  assert_eq(tree.length(), 3)
 }
 ```
 
@@ -287,7 +300,7 @@ moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 - `types.mbt`: public data types.
 - `graph_core.mbt`: graph construction, edge queries, degree/source/sink queries, and transpose.
 - `graph_search.mbt`: BFS, Dijkstra, bidirectional Dijkstra, A*, path scoring, and distance summaries.
-- `graph_traversal.mbt`: reachability, path existence, and DFS traversal.
+- `graph_traversal.mbt`: reachability, path existence, BFS tree export, and DFS traversal.
 - `graph_components.mbt`: weak/strong components, connectivity predicates, and DAG helpers.
 - `grid.mbt`: grid construction, terrain updates, terrain clearing, obstacle inflation, rectangular updates, grid neighbors, and grid pathfinding.
 - `moonpath.mbt`: package-level entry point.

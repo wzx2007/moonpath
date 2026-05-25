@@ -138,6 +138,18 @@ test "edge list workflow example" {
 
 ```mbt nocheck
 ///|
+test "bfs tree example" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 1)
+  graph.add_edge("A", "C", 2)
+  graph.add_edge("B", "D", 3)
+  let tree = graph.bfs_tree("A")
+  assert_eq(tree.length(), 3)
+}
+```
+
+```mbt nocheck
+///|
 test "all pairs summary example" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 2)

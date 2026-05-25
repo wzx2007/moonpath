@@ -29,6 +29,7 @@ This document summarizes expected complexity and practical use cases for the cur
 | API | Time | Space | Notes |
 | --- | --- | --- | --- |
 | `Graph::reachable` | O(V + E) | O(V) | Directed reachability. |
+| `Graph::bfs_tree` | O(V + E) | O(V) | Exports first-discovery BFS tree edges from one start node. |
 | `Graph::dfs_preorder` / `Graph::dfs_postorder` | O(V + E) | O(V) | Iterative DFS. |
 | `Graph::sources` / `Graph::sinks` / `Graph::isolated_nodes` | O(V + E) | O(V) | Classifies nodes by incoming and outgoing degree. |
 | `Graph::weakly_connected_components` | O(V + E) | O(V + E) | Builds an undirected view. |

@@ -135,6 +135,24 @@ test "dfs traversal and path existence inspect directed reachability" {
 }
 
 ///|
+test "bfs_tree exports first-discovery traversal edges" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 1)
+  graph.add_edge("A", "C", 2)
+  graph.add_edge("B", "D", 3)
+  graph.add_edge("C", "D", 4)
+  graph.add_edge("C", "E", 5)
+  let tree = graph.bfs_tree("A")
+  assert_eq(tree.length(), 4)
+  assert_true(contains_arc(tree, "A", "B", 1))
+  assert_true(contains_arc(tree, "A", "C", 2))
+  assert_true(contains_arc(tree, "B", "D", 3))
+  assert_true(contains_arc(tree, "C", "E", 5))
+  assert_true(!contains_arc(tree, "C", "D", 4))
+  assert_true(graph.bfs_tree("missing").length() == 0)
+}
+
+///|
 test "grid astar avoids blocked cells" {
   let grid = @moonpath.Grid::from_blocked(5, 4, [
     @moonpath.Point::{ x: 1, y: 0 },
@@ -470,6 +488,21 @@ test "grid converts open cells into graph edges" {
 fn[N : Eq] contains(items : Array[N], value : N) -> Bool {
   for item in items {
     if item == value {
+      return true
+    }
+  }
+  false
+}
+
+///|
+fn[N : Eq] contains_arc(
+  arcs : Array[@moonpath.Arc[N]],
+  from : N,
+  to : N,
+  cost : Int,
+) -> Bool {
+  for arc in arcs {
+    if arc.from == from && arc.to == to && arc.cost == cost {
       return true
     }
   }

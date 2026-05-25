@@ -43,6 +43,7 @@ pub fn[N : Hash + Eq] Graph::all_pairs_distances(Self[N]) -> @hashmap.HashMap[N,
 pub fn[N] Graph::arcs(Self[N]) -> Array[Arc[N]]
 pub fn[N : Hash + Eq] Graph::astar(Self[N], N, N, (N, N) -> Int) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::bfs(Self[N], N, N) -> Path[N]?
+pub fn[N : Hash + Eq] Graph::bfs_tree(Self[N], N) -> Array[Arc[N]]
 pub fn[N : Hash + Eq] Graph::bidirectional_dijkstra(Self[N], N, N) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::clear_edges_from(Self[N], N) -> Int
 pub fn[N : Hash + Eq] Graph::connected_components(Self[N]) -> Array[Array[N]]

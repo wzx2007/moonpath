@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.18.0
+
+- Added `Graph::bfs_tree` to export first-discovery traversal tree edges from a start node.
+- Expanded blackbox tests from 26 to 27 cases.
+
 ## 0.17.0
 
 - Added `Grid::inflated_blocks` to create obstacle-expanded grid copies for clearance-aware pathfinding.

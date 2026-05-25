@@ -39,6 +39,31 @@ pub fn[N : Hash + Eq] Graph::has_path(
 }
 
 ///|
+pub fn[N : Hash + Eq] Graph::bfs_tree(
+  self : Graph[N],
+  start : N,
+) -> Array[Arc[N]] {
+  let visited : @hashset.HashSet[N] = @hashset.HashSet([])
+  let queue : Array[N] = []
+  let tree : Array[Arc[N]] = []
+  let mut head = 0
+  visited.add(start)
+  queue.push(start)
+  while head < queue.length() {
+    let current = queue[head]
+    head += 1
+    for edge in self.neighbors(current) {
+      if !visited.contains(edge.to) {
+        visited.add(edge.to)
+        tree.push(Arc::{ from: current, to: edge.to, cost: edge.cost })
+        queue.push(edge.to)
+      }
+    }
+  }
+  tree
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::dfs_preorder(
   self : Graph[N],
   start : N,
