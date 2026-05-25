@@ -14,6 +14,7 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 - Reachability, path existence, weak/strong connected components, connectivity predicates, graph transpose, degree queries, graph eccentricity/diameter, topological sort, acyclicity checks, and topological layers.
 - Rectangular grid helpers with blocked cells, terrain costs, rectangular bulk updates, 4-neighbor, 8-neighbor, no-corner-cutting 8-neighbor pathfinding, and heuristic-free Dijkstra variants.
 - Grid export/rebuild helpers for blocked cells and terrain overrides.
+- Grid line-of-sight checks and greedy path smoothing for reducing unnecessary waypoints.
 - Grid-to-graph conversion for users who want to reuse graph algorithms on tile maps.
 - Blackbox tests covering graph search, cycle detection, graph structure, DAG layers, DFS, all-pairs distances, connectivity, grid routing, terrain costs, corner cutting, and heuristic determinism.
 
@@ -152,6 +153,19 @@ test "bulk grid demo" {
     grid.terrain_cells(),
   )
   assert_true(rebuilt.terrain_cost(@moonpath.Point::new(1, 1)) == Some(4))
+}
+```
+
+Path smoothing:
+
+```moonbit
+test "smooth path demo" {
+  let grid = @moonpath.Grid::new(5, 5)
+  let start = @moonpath.Point::new(0, 0)
+  let goal = @moonpath.Point::new(4, 4)
+  let jagged = [start, @moonpath.Point::new(1, 0), @moonpath.Point::new(4, 3), goal]
+  assert_true(grid.line_of_sight(start, goal))
+  assert_true(grid.smooth_path(jagged) == [start, goal])
 }
 ```
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.0
+
+- Added `Grid::line_of_sight` using integer grid ray traversal.
+- Added `Grid::smooth_path` to greedily remove unnecessary path waypoints when line of sight is clear.
+- Expanded blackbox tests from 20 to 21 cases.
+
 ## 0.8.0
 
 - Added `CellCost` for structured grid terrain exports.

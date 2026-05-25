@@ -22,6 +22,23 @@ test "shortest path example" {
 
 ```mbt nocheck
 ///|
+test "path smoothing example" {
+  let grid = @moonpath.Grid::new(5, 5)
+  let start = @moonpath.Point::new(0, 0)
+  let goal = @moonpath.Point::new(4, 4)
+  let jagged = [
+    start,
+    @moonpath.Point::new(1, 0),
+    @moonpath.Point::new(4, 3),
+    goal,
+  ]
+  assert_true(grid.line_of_sight(start, goal))
+  assert_true(grid.smooth_path(jagged) == [start, goal])
+}
+```
+
+```mbt nocheck
+///|
 test "edge list workflow example" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 2)

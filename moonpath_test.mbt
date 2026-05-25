@@ -300,6 +300,31 @@ test "grid exports and rebuilds blocked and terrain cells" {
 }
 
 ///|
+test "grid smooth_path removes unnecessary waypoints" {
+  let grid = @moonpath.Grid::new(5, 5)
+  let start = @moonpath.Point::new(0, 0)
+  let goal = @moonpath.Point::new(4, 4)
+  let jagged = [
+    start,
+    @moonpath.Point::new(1, 0),
+    @moonpath.Point::new(2, 0),
+    @moonpath.Point::new(3, 1),
+    @moonpath.Point::new(4, 2),
+    @moonpath.Point::new(4, 3),
+    goal,
+  ]
+  assert_true(grid.line_of_sight(start, goal))
+  assert_true(grid.smooth_path(jagged) == [start, goal])
+
+  grid.block(@moonpath.Point::new(2, 2))
+  assert_true(!grid.line_of_sight(start, goal))
+  let smoothed = grid.smooth_path(jagged)
+  assert_true(smoothed.length() > 2)
+  assert_true(smoothed[0] == start)
+  assert_true(smoothed[smoothed.length() - 1] == goal)
+}
+
+///|
 test "grid astar8 uses consistent octile scale" {
   let grid = @moonpath.Grid::new(3, 3)
   let start = @moonpath.Point::new(0, 0)

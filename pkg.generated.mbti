@@ -94,6 +94,7 @@ pub fn Grid::from_blocked(Int, Int, Array[Point]) -> Self
 pub fn Grid::from_parts(Int, Int, Array[Point], Array[CellCost]) -> Self
 pub fn Grid::is_blocked(Self, Point) -> Bool
 pub fn Grid::is_open(Self, Point) -> Bool
+pub fn Grid::line_of_sight(Self, Point, Point) -> Bool
 pub fn Grid::neighbors4(Self, Point) -> Array[Edge[Point]]
 pub fn Grid::neighbors8(Self, Point) -> Array[Edge[Point]]
 pub fn Grid::neighbors8_no_corner_cutting(Self, Point) -> Array[Edge[Point]]
@@ -102,6 +103,7 @@ pub fn Grid::open_points(Self) -> Array[Point]
 pub fn Grid::points(Self) -> Array[Point]
 pub fn Grid::set_cost(Self, Point, Int) -> Unit
 pub fn Grid::set_cost_rect(Self, Point, Int, Int, Int) -> Unit
+pub fn Grid::smooth_path(Self, Array[Point]) -> Array[Point]
 pub fn Grid::terrain_cells(Self) -> Array[CellCost]
 pub fn Grid::terrain_cost(Self, Point) -> Int?
 pub fn Grid::to_graph4(Self) -> Graph[Point]

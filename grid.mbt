@@ -184,6 +184,55 @@ pub fn Grid::terrain_cells(self : Grid) -> Array[CellCost] {
 }
 
 ///|
+pub fn Grid::line_of_sight(self : Grid, from : Point, to : Point) -> Bool {
+  guard self.is_open(from) && self.is_open(to) else { return false }
+  let mut x = from.x
+  let mut y = from.y
+  let dx = (to.x - from.x).abs()
+  let dy = (to.y - from.y).abs()
+  let step_x = step_toward(from.x, to.x)
+  let step_y = step_toward(from.y, to.y)
+  let mut err = dx - dy
+  while true {
+    if !self.is_open(Point::{ x, y }) {
+      return false
+    }
+    if x == to.x && y == to.y {
+      return true
+    }
+    let twice = err * 2
+    if twice > -dy {
+      err -= dy
+      x += step_x
+    }
+    if twice < dx {
+      err += dx
+      y += step_y
+    }
+  }
+  true
+}
+
+///|
+pub fn Grid::smooth_path(self : Grid, nodes : Array[Point]) -> Array[Point] {
+  guard nodes.length() > 0 else { return [] }
+  guard nodes.length() > 2 else { return nodes.copy() }
+  let out : Array[Point] = []
+  let mut anchor = 0
+  out.push(nodes[0])
+  while anchor < nodes.length() - 1 {
+    let mut candidate = nodes.length() - 1
+    while candidate > anchor + 1 &&
+          !self.line_of_sight(nodes[anchor], nodes[candidate]) {
+      candidate -= 1
+    }
+    out.push(nodes[candidate])
+    anchor = candidate
+  }
+  out
+}
+
+///|
 pub fn Grid::neighbors4(self : Grid, point : Point) -> Array[Edge[Point]] {
   let out : Array[Edge[Point]] = []
   for
@@ -371,5 +420,16 @@ fn Grid::assert_rect(
     top_left.x + width <= self.width &&
     top_left.y + height <= self.height else {
     abort("rectangle is outside grid")
+  }
+}
+
+///|
+fn step_toward(from : Int, to : Int) -> Int {
+  if from < to {
+    1
+  } else if from > to {
+    -1
+  } else {
+    0
   }
 }
