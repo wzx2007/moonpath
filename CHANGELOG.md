@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.21.0
+
+- Added `Graph::dag_longest_path` for weighted critical-path queries on acyclic graphs.
+- Expanded blackbox tests from 28 to 29 cases.
+
 ## 0.20.0
 
 - Reworked `Graph::strongly_connected_components` to use a linear two-pass DFS implementation.

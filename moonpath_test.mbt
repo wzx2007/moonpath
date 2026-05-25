@@ -117,6 +117,28 @@ test "topological layers group independent work" {
 }
 
 ///|
+test "dag_longest_path returns weighted critical path" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("start", "A", 2)
+  graph.add_edge("start", "B", 1)
+  graph.add_edge("A", "C", 3)
+  graph.add_edge("B", "C", 10)
+  graph.add_edge("C", "done", 1)
+  guard graph.dag_longest_path("start", "done") is Some(path) else {
+    fail("expected a DAG longest path")
+  }
+  assert_eq(path.cost, 12)
+  assert_true(path.nodes == ["start", "B", "C", "done"])
+  assert_eq(path.visited, 5)
+  assert_true(graph.dag_longest_path("missing", "done") == None)
+
+  let cyclic = @moonpath.Graph::new()
+  cyclic.add_edge("A", "B", 1)
+  cyclic.add_edge("B", "A", 1)
+  assert_true(cyclic.dag_longest_path("A", "B") == None)
+}
+
+///|
 test "dfs traversal and path existence inspect directed reachability" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 1)

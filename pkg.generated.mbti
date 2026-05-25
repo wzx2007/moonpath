@@ -49,6 +49,7 @@ pub fn[N : Hash + Eq] Graph::clear_edges_from(Self[N], N) -> Int
 pub fn[N : Hash + Eq] Graph::connected_components(Self[N]) -> Array[Array[N]]
 pub fn[N : Hash + Eq] Graph::contains_edge(Self[N], N, N) -> Bool
 pub fn[N : Hash + Eq] Graph::contains_node(Self[N], N) -> Bool
+pub fn[N : Hash + Eq] Graph::dag_longest_path(Self[N], N, N) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::dfs_postorder(Self[N], N) -> Array[N]
 pub fn[N : Hash + Eq] Graph::dfs_preorder(Self[N], N) -> Array[N]
 pub fn[N : Hash + Eq] Graph::diameter(Self[N]) -> Int?

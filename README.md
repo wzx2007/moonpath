@@ -12,7 +12,7 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 - Edge-list export and reconstruction with `Arc[N]`, plus node-filtered induced subgraphs and reachable subgraphs.
 - Safe all-or-nothing graph construction from external edge lists with `try_from_arcs`.
 - BFS, BFS-tree, and DFS traversal helpers for directed graphs.
-- Dijkstra and bidirectional Dijkstra shortest paths for non-negative weighted graphs, plus explicit path scoring, one-source distance maps, and all-pairs distance maps.
+- Dijkstra and bidirectional Dijkstra shortest paths for non-negative weighted graphs, DAG longest paths for critical-path analysis, plus explicit path scoring, one-source distance maps, and all-pairs distance maps.
 - Path result helpers for node and edge counts.
 - A* search with custom heuristic functions.
 - Reachability, path existence, weak/strong connected components, connectivity predicates, graph transpose, degree queries, source/sink/isolated-node queries, graph eccentricity/diameter, topological sort, acyclicity checks, and topological layers.
@@ -112,6 +112,23 @@ test "analysis demo" {
   let distances = graph.distances_from("parse")
   assert_eq(distances.get_or_default("package", -1), 5)
   assert_true(graph.topological_layers() is Some(_))
+}
+```
+
+DAG critical path:
+
+```moonbit
+test "dag longest path demo" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("start", "A", 2)
+  graph.add_edge("start", "B", 1)
+  graph.add_edge("A", "done", 3)
+  graph.add_edge("B", "done", 8)
+  guard graph.dag_longest_path("start", "done") is Some(path) else {
+    fail("expected a critical path")
+  }
+  assert_eq(path.cost, 9)
+  assert_true(path.nodes == ["start", "B", "done"])
 }
 ```
 

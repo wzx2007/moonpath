@@ -211,6 +211,50 @@ pub fn[N : Hash + Eq] Graph::astar(
 }
 
 ///|
+pub fn[N : Hash + Eq] Graph::dag_longest_path(
+  self : Graph[N],
+  start : N,
+  goal : N,
+) -> Path[N]? {
+  guard self.contains_node(start) && self.contains_node(goal) else {
+    return None
+  }
+  guard self.topological_sort() is Some(order) else { return None }
+  let dist : @hashmap.HashMap[N, Int] = @hashmap.HashMap([])
+  let parents : @hashmap.HashMap[N, N] = @hashmap.HashMap([])
+  dist.set(start, 0)
+  for node in order {
+    match dist.get(node) {
+      Some(current_cost) =>
+        for edge in self.neighbors(node) {
+          let next_cost = current_cost + edge.cost
+          match dist.get(edge.to) {
+            Some(existing) =>
+              if next_cost > existing {
+                dist.set(edge.to, next_cost)
+                parents.set(edge.to, node)
+              }
+            None => {
+              dist.set(edge.to, next_cost)
+              parents.set(edge.to, node)
+            }
+          }
+        }
+      None => ()
+    }
+  }
+  match dist.get(goal) {
+    Some(cost) =>
+      Some(Path::{
+        cost,
+        nodes: reconstruct_path(parents, start, goal),
+        visited: dist.length(),
+      })
+    None => None
+  }
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::path_cost(
   self : Graph[N],
   nodes : Array[N],

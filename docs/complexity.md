@@ -23,6 +23,7 @@ This document summarizes expected complexity and practical use cases for the cur
 | `Graph::astar` | O((V + E) log V) worst case | O(V) | Faster when the heuristic is admissible and informative. |
 | `Graph::distances_from` | O((V + E) log V) | O(V) | Computes distances from one source to all reachable nodes. |
 | `Graph::all_pairs_distances` | O(V * (V + E) log V) | O(V^2) worst case | Runs Dijkstra from every node. |
+| `Graph::dag_longest_path` | O(V + E) | O(V) | Returns `None` if the graph has a cycle or the goal is unreachable. |
 
 ## Graph Analysis
 
@@ -62,6 +63,7 @@ Let `N = width * height`.
 - Use `bfs` when every edge has the same practical cost.
 - Use `dijkstra` when weights matter and there is no useful heuristic.
 - Use `bidirectional_dijkstra` for point-to-point weighted graph queries where both endpoints are known.
+- Use `dag_longest_path` for critical-path analysis on acyclic dependency graphs.
 - Use `astar4` or `astar8` for grid maps with a clear geometric heuristic.
 - Use `dijkstra4` or `dijkstra8` when terrain costs dominate and heuristic guidance is not useful.
 - Use `try_from_arcs` for external or user-provided graph data.

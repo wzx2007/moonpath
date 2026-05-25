@@ -190,6 +190,22 @@ test "distance and dag layer example" {
 
 ```mbt nocheck
 ///|
+test "dag longest path example" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("start", "A", 2)
+  graph.add_edge("start", "B", 1)
+  graph.add_edge("A", "done", 3)
+  graph.add_edge("B", "done", 8)
+  guard graph.dag_longest_path("start", "done") is Some(path) else {
+    fail("expected a critical path")
+  }
+  assert_eq(path.cost, 9)
+  assert_true(path.nodes == ["start", "B", "done"])
+}
+```
+
+```mbt nocheck
+///|
 test "bulk grid example" {
   let grid = @moonpath.Grid::new(5, 4)
   grid.block_rect(@moonpath.Point::new(1, 1), 3, 2)
