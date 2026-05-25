@@ -1,0 +1,75 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonbit-contest/moonpath"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/hashmap",
+  "moonbitlang/core/hashset",
+}
+
+// Values
+pub fn manhattan(Point, Point) -> Int
+
+pub fn octile(Point, Point) -> Int
+
+pub fn[N : Hash + Eq] shortest_path(N, N, (N) -> Array[Edge[N]], (N, N) -> Int) -> Path[N]?
+
+// Errors
+
+// Types and methods
+pub(all) struct Edge[N] {
+  to : N
+  cost : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) struct Graph[N] {
+  mut adjacency : @hashmap.HashMap[N, Array[Edge[N]]]
+}
+pub fn[N : Hash + Eq] Graph::add_edge(Self[N], N, N, Int) -> Unit
+pub fn[N : Hash + Eq] Graph::add_node(Self[N], N) -> Unit
+pub fn[N : Hash + Eq] Graph::add_undirected_edge(Self[N], N, N, Int) -> Unit
+pub fn[N : Hash + Eq] Graph::astar(Self[N], N, N, (N, N) -> Int) -> Path[N]?
+pub fn[N : Hash + Eq] Graph::bfs(Self[N], N, N) -> Path[N]?
+pub fn[N : Hash + Eq] Graph::connected_components(Self[N]) -> Array[Array[N]]
+pub fn[N : Hash + Eq] Graph::contains_node(Self[N], N) -> Bool
+pub fn[N : Hash + Eq] Graph::dijkstra(Self[N], N, N) -> Path[N]?
+pub fn[N] Graph::edge_count(Self[N]) -> Int
+pub fn[N : Hash + Eq] Graph::neighbors(Self[N], N) -> Array[Edge[N]]
+pub fn[N : Hash + Eq] Graph::new() -> Self[N]
+pub fn[N] Graph::node_count(Self[N]) -> Int
+pub fn[N] Graph::nodes(Self[N]) -> Array[N]
+pub fn[N : Hash + Eq] Graph::reachable(Self[N], N) -> Array[N]
+pub fn[N : Hash + Eq] Graph::topological_sort(Self[N]) -> Array[N]?
+
+pub(all) struct Grid {
+  width : Int
+  height : Int
+  mut blocked : @hashset.HashSet[Point]
+}
+pub fn Grid::astar4(Self, Point, Point) -> Path[Point]?
+pub fn Grid::astar8(Self, Point, Point) -> Path[Point]?
+pub fn Grid::block(Self, Point) -> Unit
+pub fn Grid::contains(Self, Point) -> Bool
+pub fn Grid::from_blocked(Int, Int, Array[Point]) -> Self
+pub fn Grid::is_blocked(Self, Point) -> Bool
+pub fn Grid::is_open(Self, Point) -> Bool
+pub fn Grid::neighbors4(Self, Point) -> Array[Edge[Point]]
+pub fn Grid::neighbors8(Self, Point) -> Array[Edge[Point]]
+pub fn Grid::new(Int, Int) -> Self
+pub fn Grid::unblock(Self, Point) -> Unit
+
+pub(all) struct Path[N] {
+  cost : Int
+  nodes : Array[N]
+  visited : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) struct Point {
+  x : Int
+  y : Int
+} derive(Eq, Hash, @debug.Debug)
+
+// Type aliases
+
+// Traits
+
