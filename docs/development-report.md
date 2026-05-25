@@ -2,21 +2,20 @@
 
 ## 项目目标
 
-MoonPath 的目标是为 MoonBit 生态补充一个可直接复用的图算法与寻路基础库。项目聚焦明确、接口小、测试可复现，适合作为游戏地图、依赖图、流程图、路由规划和可视化工具的底层组件。
+MoonPath 的目标是为 MoonBit 生态补充一个可直接复用的图算法与寻路基础库。项目聚焦游戏地图、依赖图、流程图、路由规划、编译器中间结构遍历和可视化工具等常见场景，提供清晰、可测试、可持续扩展的 API。
 
 ## 已完成内容
 
-- 完成 MoonBit 项目结构和模块元数据。
+- 完成 MoonBit 项目结构、模块元数据、许可证、README、CI 和命令行示例。
 - 实现 `Edge[N]`、`Path[N]`、`Graph[N]`、`Point`、`Grid` 等核心类型。
-- 实现加权图增删建模能力：节点、边、无向边、邻接查询、节点数和边数统计。
-- 实现 BFS、Dijkstra、A*、reachable、connected_components、topological_sort。
-- 实现 grid 4-neighbor 和 8-neighbor pathfinding。
-- 实现 Manhattan 与 Octile 启发函数。
+- 实现加权有向图建模能力：节点、边、无向边、邻接查询、边存在查询、入度/出度、节点数和边数统计。
+- 实现 BFS、Dijkstra、A*、reachable、topological sort。
+- 实现弱连通分量、强连通分量和图转置。
+- 实现 grid 4-neighbor 与 8-neighbor pathfinding，并修正 8 邻接 A* 的 octile 成本尺度。
+- 实现 grid blocked cells、terrain costs、point enumeration、open cell enumeration 和 grid-to-graph 转换。
 - 实现二叉堆优先队列作为最短路算法内部结构。
-- 编写 5 个黑盒测试，覆盖最短路、BFS、拓扑排序、grid A* 和启发函数。
-- 增加 CLI demo：`moon run cmd/main`。
-- 增加 GitHub Actions CI：格式检查、构建、测试。
-- 增加 README、变更记录、赛题要求摘要、申报书和提交清单。
+- 编写 10 个黑盒测试，覆盖最短路、BFS、拓扑排序、图结构分析、强/弱连通分量、grid A*、terrain costs、grid-to-graph 和启发函数。
+- 增加项目申报书、验收清单、AI 协作记录和比赛需求摘要。
 
 ## 验证结果
 
@@ -30,7 +29,7 @@ moonc v0.9.3
 已执行：
 
 ```powershell
-moon fmt
+moon fmt --check
 moon test
 moon build
 moon run cmd/main
@@ -40,28 +39,27 @@ moon info
 结果：
 
 ```text
-Total tests: 5, passed: 5, failed: 0.
-moonpath demo: cost=11, steps=11, visited=21
+Total tests: 10, passed: 10, failed: 0.
+moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 ```
 
 ## 工程质量说明
 
-- 公共 API 集中在 `moonpath.mbt`，测试位于 `moonpath_test.mbt`。
-- 算法使用非负权重约束，负权重通过 `add_edge` 入口拒绝。
+- 公共 API 集中在 `moonpath.mbt`，黑盒测试位于 `moonpath_test.mbt`。
+- 图最短路使用非负权重约束，负权重通过 `add_edge` 入口拒绝。
 - A* 与 Dijkstra 共用 `shortest_path` 内核，避免重复实现。
-- Grid API 复用通用 A* 内核，降低维护成本。
-- CI 覆盖格式、构建与测试流程，符合赛题验收要求。
+- Grid API 复用通用 A* 内核，并可转换为 `Graph[Point]` 继续使用图算法。
+- CI 覆盖格式检查、构建和测试流程，符合赛题对公开仓库和持续集成的要求。
 
 ## 已知限制
 
-- 当前图结构以正权/零权图为目标，不支持负权最短路。
-- `connected_components` 按当前边方向的可达性分组，更适合无向图通过 `add_undirected_edge` 建模后使用。
-- 尚未实现 JSON 序列化和随机图性质测试。
+- 当前不支持负权最短路；如需支持可补充 Bellman-Ford。
+- 当前 JSON 导入导出尚未实现。
+- 随机性质测试和性能基准尚未加入。
 
 ## 后续计划
 
 - 增加 JSON 格式导入导出。
-- 增加 weighted terrain grid。
-- 增加 bidirectional shortest path。
-- 增加 benchmark 和随机性质测试。
-- 发布到公开 MoonBit 包生态。
+- 增加 bidirectional Dijkstra / bidirectional A*。
+- 增加随机图性质测试和基础 benchmark。
+- 扩展示例，覆盖游戏地图、依赖分析和流程编排场景。

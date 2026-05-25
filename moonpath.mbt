@@ -32,6 +32,7 @@ pub(all) struct Grid {
   width : Int
   height : Int
   mut blocked : @hashset.HashSet[Point]
+  mut terrain : @hashmap.HashMap[Point, Int]
 }
 
 ///|
@@ -114,6 +115,52 @@ pub fn[N : Hash + Eq] Graph::contains_node(self : Graph[N], node : N) -> Bool {
 }
 
 ///|
+pub fn[N : Hash + Eq] Graph::contains_edge(
+  self : Graph[N],
+  from : N,
+  to : N,
+) -> Bool {
+  for edge in self.neighbors(from) {
+    if edge.to == to {
+      return true
+    }
+  }
+  false
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::out_degree(self : Graph[N], node : N) -> Int {
+  self.neighbors(node).length()
+}
+
+///|
+pub fn[N : Eq] Graph::in_degree(self : Graph[N], node : N) -> Int {
+  let mut count = 0
+  self.adjacency.each((_from, edges) => {
+    for edge in edges {
+      if edge.to == node {
+        count += 1
+      }
+    }
+  })
+  count
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::transpose(self : Graph[N]) -> Graph[N] {
+  let reversed = Graph::new()
+  for node in self.nodes() {
+    reversed.add_node(node)
+  }
+  self.adjacency.each((from, edges) => {
+    for edge in edges {
+      reversed.add_edge(edge.to, from, edge.cost)
+    }
+  })
+  reversed
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::bfs(
   self : Graph[N],
   start : N,
@@ -189,13 +236,55 @@ pub fn[N : Hash + Eq] Graph::reachable(self : Graph[N], start : N) -> Array[N] {
 pub fn[N : Hash + Eq] Graph::connected_components(
   self : Graph[N],
 ) -> Array[Array[N]] {
+  self.weakly_connected_components()
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::weakly_connected_components(
+  self : Graph[N],
+) -> Array[Array[N]] {
+  let undirected = Graph::new()
+  for node in self.nodes() {
+    undirected.add_node(node)
+  }
+  self.adjacency.each((from, edges) => {
+    for edge in edges {
+      undirected.add_undirected_edge(from, edge.to, edge.cost)
+    }
+  })
   let seen : @hashset.HashSet[N] = @hashset.HashSet([])
   let components : Array[Array[N]] = []
-  for node in self.nodes() {
+  for node in undirected.nodes() {
     if !seen.contains(node) {
-      let component = self.reachable(node)
+      let component = undirected.reachable(node)
       for item in component {
         seen.add(item)
+      }
+      components.push(component)
+    }
+  }
+  components
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::strongly_connected_components(
+  self : Graph[N],
+) -> Array[Array[N]] {
+  let reversed = self.transpose()
+  let assigned : @hashset.HashSet[N] = @hashset.HashSet([])
+  let components : Array[Array[N]] = []
+  for node in self.nodes() {
+    if !assigned.contains(node) {
+      let backward : @hashset.HashSet[N] = @hashset.HashSet([])
+      for item in reversed.reachable(node) {
+        backward.add(item)
+      }
+      let component : Array[N] = []
+      for item in self.reachable(node) {
+        if backward.contains(item) && !assigned.contains(item) {
+          assigned.add(item)
+          component.push(item)
+        }
       }
       components.push(component)
     }
@@ -289,7 +378,12 @@ pub fn Grid::new(width : Int, height : Int) -> Grid {
   guard width >= 0 && height >= 0 else {
     abort("grid width and height must be non-negative")
   }
-  Grid::{ width, height, blocked: @hashset.HashSet([]) }
+  Grid::{
+    width,
+    height,
+    blocked: @hashset.HashSet([]),
+    terrain: @hashmap.HashMap([]),
+  }
 }
 
 ///|
@@ -303,6 +397,16 @@ pub fn Grid::from_blocked(
     grid.block(point)
   }
   grid
+}
+
+///|
+pub fn Point::new(x : Int, y : Int) -> Point {
+  Point::{ x, y }
+}
+
+///|
+pub fn Point::offset(self : Point, dx : Int, dy : Int) -> Point {
+  Point::{ x: self.x + dx, y: self.y + dy }
 }
 
 ///|
@@ -321,6 +425,32 @@ pub fn Grid::is_open(self : Grid, point : Point) -> Bool {
 }
 
 ///|
+pub fn Grid::points(self : Grid) -> Array[Point] {
+  let points : Array[Point] = []
+  let mut y = 0
+  while y < self.height {
+    let mut x = 0
+    while x < self.width {
+      points.push(Point::{ x, y })
+      x += 1
+    }
+    y += 1
+  }
+  points
+}
+
+///|
+pub fn Grid::open_points(self : Grid) -> Array[Point] {
+  let points : Array[Point] = []
+  for point in self.points() {
+    if self.is_open(point) {
+      points.push(point)
+    }
+  }
+  points
+}
+
+///|
 pub fn Grid::block(self : Grid, point : Point) -> Unit {
   guard self.contains(point) else { abort("blocked point is outside grid") }
   self.blocked.add(point)
@@ -329,6 +459,19 @@ pub fn Grid::block(self : Grid, point : Point) -> Unit {
 ///|
 pub fn Grid::unblock(self : Grid, point : Point) -> Unit {
   self.blocked.remove(point)
+}
+
+///|
+pub fn Grid::set_cost(self : Grid, point : Point, cost : Int) -> Unit {
+  guard self.contains(point) else { abort("cost point is outside grid") }
+  guard cost > 0 else { abort("terrain cost must be positive") }
+  self.terrain.set(point, cost)
+}
+
+///|
+pub fn Grid::terrain_cost(self : Grid, point : Point) -> Int? {
+  guard self.contains(point) else { return None }
+  Some(self.terrain.get_or_default(point, 1))
 }
 
 ///|
@@ -343,7 +486,7 @@ pub fn Grid::neighbors4(self : Grid, point : Point) -> Array[Edge[Point]] {
     ] {
     let next = Point::{ x: point.x + delta.x, y: point.y + delta.y }
     if self.is_open(next) {
-      out.push(Edge::{ to: next, cost: 1 })
+      out.push(Edge::{ to: next, cost: self.terrain_cost_unchecked(next) })
     }
   }
   out
@@ -351,7 +494,19 @@ pub fn Grid::neighbors4(self : Grid, point : Point) -> Array[Edge[Point]] {
 
 ///|
 pub fn Grid::neighbors8(self : Grid, point : Point) -> Array[Edge[Point]] {
-  let out = self.neighbors4(point)
+  let out : Array[Edge[Point]] = []
+  for
+    delta in [
+      Point::{ x: 1, y: 0 },
+      Point::{ x: -1, y: 0 },
+      Point::{ x: 0, y: 1 },
+      Point::{ x: 0, y: -1 },
+    ] {
+    let next = Point::{ x: point.x + delta.x, y: point.y + delta.y }
+    if self.is_open(next) {
+      out.push(Edge::{ to: next, cost: self.terrain_cost_unchecked(next) * 10 })
+    }
+  }
   for
     delta in [
       Point::{ x: 1, y: 1 },
@@ -361,10 +516,34 @@ pub fn Grid::neighbors8(self : Grid, point : Point) -> Array[Edge[Point]] {
     ] {
     let next = Point::{ x: point.x + delta.x, y: point.y + delta.y }
     if self.is_open(next) {
-      out.push(Edge::{ to: next, cost: 14 })
+      out.push(Edge::{ to: next, cost: self.terrain_cost_unchecked(next) * 14 })
     }
   }
   out
+}
+
+///|
+pub fn Grid::to_graph4(self : Grid) -> Graph[Point] {
+  let graph = Graph::new()
+  for point in self.open_points() {
+    graph.add_node(point)
+    for edge in self.neighbors4(point) {
+      graph.add_edge(point, edge.to, edge.cost)
+    }
+  }
+  graph
+}
+
+///|
+pub fn Grid::to_graph8(self : Grid) -> Graph[Point] {
+  let graph = Graph::new()
+  for point in self.open_points() {
+    graph.add_node(point)
+    for edge in self.neighbors8(point) {
+      graph.add_edge(point, edge.to, edge.cost)
+    }
+  }
+  graph
 }
 
 ///|
@@ -432,6 +611,11 @@ fn[N : Hash + Eq] path_edge_count(
     }
   }
   count
+}
+
+///|
+fn Grid::terrain_cost_unchecked(self : Grid, point : Point) -> Int {
+  self.terrain.get_or_default(point, 1)
 }
 
 ///|

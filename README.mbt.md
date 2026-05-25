@@ -17,5 +17,18 @@ test "shortest path example" {
 }
 ```
 
+```mbt nocheck
+///|
+test "grid terrain example" {
+  let grid = @moonpath.Grid::new(3, 3)
+  grid.set_cost(@moonpath.Point::new(1, 0), 5)
+  guard grid.astar8(@moonpath.Point::new(0, 0), @moonpath.Point::new(2, 2))
+    is Some(path) else {
+    fail("expected a path")
+  }
+  assert_eq(path.cost, 28)
+}
+```
+
 See `README.md` and `docs/` for installation, usage, contest materials, and the
 submission checklist.

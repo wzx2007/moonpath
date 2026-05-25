@@ -10,9 +10,10 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 - BFS for shallow unweighted paths.
 - Dijkstra shortest path for non-negative weighted graphs.
 - A* search with custom heuristic functions.
-- Reachability, connected components, and topological sort.
-- Rectangular grid helpers with 4-neighbor and 8-neighbor pathfinding.
-- Blackbox tests covering graph search, cycle detection, grid routing, and heuristic determinism.
+- Reachability, weak/strong connected components, graph transpose, degree queries, and topological sort.
+- Rectangular grid helpers with blocked cells, terrain costs, 4-neighbor and 8-neighbor pathfinding.
+- Grid-to-graph conversion for users who want to reuse graph algorithms on tile maps.
+- Blackbox tests covering graph search, cycle detection, graph structure, grid routing, terrain costs, and heuristic determinism.
 
 ## Install
 
@@ -63,6 +64,33 @@ test "grid demo" {
 }
 ```
 
+Weighted terrain and 8-direction pathfinding:
+
+```moonbit
+test "weighted grid demo" {
+  let grid = @moonpath.Grid::new(3, 3)
+  let rough = @moonpath.Point::new(1, 0)
+  grid.set_cost(rough, 5)
+  guard grid.astar8(@moonpath.Point::new(0, 0), @moonpath.Point::new(2, 2)) is Some(path) else {
+    fail("expected a path")
+  }
+  assert_eq(path.cost, 28)
+}
+```
+
+Graph analysis:
+
+```moonbit
+test "component demo" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 1)
+  graph.add_edge("B", "A", 1)
+  graph.add_edge("B", "C", 1)
+  assert_eq(graph.weakly_connected_components().length(), 1)
+  assert_eq(graph.strongly_connected_components().length(), 2)
+}
+```
+
 Run the CLI demo:
 
 ```powershell
@@ -72,7 +100,7 @@ moon run cmd/main
 Expected output:
 
 ```text
-moonpath demo: cost=11, steps=11, visited=21
+moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 ```
 
 ## Repository Layout
@@ -89,7 +117,6 @@ moonpath demo: cost=11, steps=11, visited=21
 ## Roadmap
 
 - Add bidirectional Dijkstra and A*.
-- Add weighted grid terrain costs.
 - Add graph serialization for JSON interchange.
 - Add property tests for randomized graph invariants.
 - Publish the package after the public repository is pushed.
