@@ -4,13 +4,13 @@
 
 项目名称：MoonPath：MoonBit 图算法与寻路工具库
 
-参赛者：`<填写姓名或队伍名>`
+参赛者：`w1tness`
 
-联系方式：`<填写邮箱/手机号>`
+联系方式：`待填写`
 
-GitHub 仓库链接：`https://github.com/<your-github-id>/moonpath`
+GitHub 仓库链接：`https://github.com/wzx2007/moonpath`
 
-GitLink 仓库链接：`https://www.gitlink.org.cn/<your-gitlink-id>/moonpath`
+GitLink 仓库链接：`https://www.gitlink.org.cn/w1tness/moonpath`
 
 项目方向：基础数据结构与算法 / Graph 算法库 / Pathfinding 工具库
 

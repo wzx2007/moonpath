@@ -27,7 +27,7 @@ moon info
 
 ## 参赛者提交前必须填写
 
-- `docs/project-proposal.md` 中的参赛者姓名、联系方式、GitHub 链接、GitLink 链接。
+- `docs/project-proposal.md` 中的联系方式。
 - `moon.mod` 中的 `repository`。
 - GitHub 仓库描述、Topics、许可证确认。
 - GitLink 仓库同步地址。
@@ -35,7 +35,7 @@ moon info
 ## 线上提交步骤
 
 1. 在 GitHub 创建公开仓库 `moonpath`。
-2. 在本地执行 `git remote add origin https://github.com/<your-github-id>/moonpath.git`。
+2. GitHub 仓库地址：`https://github.com/wzx2007/moonpath`。
 3. 推送代码：`git push -u origin main`。
 4. 在 GitLink 创建同名仓库并从 GitHub 同步，或手动推送到 GitLink remote。
 5. 按赛事群/CCF 要求提交报名信息和申报问卷。
@@ -63,5 +63,5 @@ moon info
 
 ## 验收风险
 
-- 当前本地包还没有公开仓库链接，必须由参赛者本人完成 GitHub/GitLink 发布。
+- GitHub 与 GitLink 已公开；GitLink 为 GitHub 镜像仓库，需在最终提交前确认同步状态正常。
 - 当前代码规模是可运行 MVP，距离赛题提到的 4-10k 有效 MoonBit 代码行数仍需要扩展功能、测试和文档示例。
