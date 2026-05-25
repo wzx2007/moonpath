@@ -209,6 +209,139 @@ pub fn[N : Hash + Eq] Graph::dijkstra(
 }
 
 ///|
+pub fn[N : Hash + Eq] Graph::bidirectional_dijkstra(
+  self : Graph[N],
+  start : N,
+  goal : N,
+) -> Path[N]? {
+  if start == goal {
+    return Some(Path::{ cost: 0, nodes: [start], visited: 1 })
+  }
+  let reversed = self.transpose()
+  let forward = PriorityQueue::new()
+  let backward = PriorityQueue::new()
+  let dist_forward : @hashmap.HashMap[N, Int] = @hashmap.HashMap([])
+  let dist_backward : @hashmap.HashMap[N, Int] = @hashmap.HashMap([])
+  let parents_forward : @hashmap.HashMap[N, N] = @hashmap.HashMap([])
+  let parents_backward : @hashmap.HashMap[N, N] = @hashmap.HashMap([])
+  let closed_forward : @hashset.HashSet[N] = @hashset.HashSet([])
+  let closed_backward : @hashset.HashSet[N] = @hashset.HashSet([])
+  let mut best : Int? = None
+  let mut meeting : N? = None
+  forward.push(start, 0)
+  backward.push(goal, 0)
+  dist_forward.set(start, 0)
+  dist_backward.set(goal, 0)
+
+  while true {
+    let mut progressed = false
+    match forward.pop_min() {
+      Some(item) => {
+        progressed = true
+        let current = item.node
+        if !closed_forward.contains(current) {
+          closed_forward.add(current)
+          let current_cost = dist_forward.get_or_default(current, 0)
+          match dist_backward.get(current) {
+            Some(other_cost) => {
+              let candidate = current_cost + other_cost
+              match best {
+                Some(existing) =>
+                  if candidate < existing {
+                    best = Some(candidate)
+                    meeting = Some(current)
+                  }
+                None => {
+                  best = Some(candidate)
+                  meeting = Some(current)
+                }
+              }
+            }
+            None => ()
+          }
+          for edge in self.neighbors(current) {
+            let next_cost = current_cost + edge.cost
+            match dist_forward.get(edge.to) {
+              Some(existing) =>
+                if next_cost < existing {
+                  dist_forward.set(edge.to, next_cost)
+                  parents_forward.set(edge.to, current)
+                  forward.push(edge.to, next_cost)
+                }
+              None => {
+                dist_forward.set(edge.to, next_cost)
+                parents_forward.set(edge.to, current)
+                forward.push(edge.to, next_cost)
+              }
+            }
+          }
+        }
+      }
+      None => ()
+    }
+    match backward.pop_min() {
+      Some(item) => {
+        progressed = true
+        let current = item.node
+        if !closed_backward.contains(current) {
+          closed_backward.add(current)
+          let current_cost = dist_backward.get_or_default(current, 0)
+          match dist_forward.get(current) {
+            Some(other_cost) => {
+              let candidate = current_cost + other_cost
+              match best {
+                Some(existing) =>
+                  if candidate < existing {
+                    best = Some(candidate)
+                    meeting = Some(current)
+                  }
+                None => {
+                  best = Some(candidate)
+                  meeting = Some(current)
+                }
+              }
+            }
+            None => ()
+          }
+          for edge in reversed.neighbors(current) {
+            let next_cost = current_cost + edge.cost
+            match dist_backward.get(edge.to) {
+              Some(existing) =>
+                if next_cost < existing {
+                  dist_backward.set(edge.to, next_cost)
+                  parents_backward.set(edge.to, current)
+                  backward.push(edge.to, next_cost)
+                }
+              None => {
+                dist_backward.set(edge.to, next_cost)
+                parents_backward.set(edge.to, current)
+                backward.push(edge.to, next_cost)
+              }
+            }
+          }
+        }
+      }
+      None => ()
+    }
+    if !progressed {
+      break
+    }
+  }
+
+  match (best, meeting) {
+    (Some(cost), Some(mid)) =>
+      Some(Path::{
+        cost,
+        nodes: reconstruct_bidirectional_path(
+          parents_forward, parents_backward, start, mid, goal,
+        ),
+        visited: closed_forward.length() + closed_backward.length(),
+      })
+    _ => None
+  }
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::astar(
   self : Graph[N],
   start : N,
@@ -216,6 +349,34 @@ pub fn[N : Hash + Eq] Graph::astar(
   heuristic : (N, N) -> Int,
 ) -> Path[N]? {
   shortest_path(start, goal, node => self.neighbors(node), heuristic)
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::path_cost(
+  self : Graph[N],
+  nodes : Array[N],
+) -> Int? {
+  guard nodes.length() > 0 else { return None }
+  let mut total = 0
+  let mut index = 0
+  while index + 1 < nodes.length() {
+    let from = nodes[index]
+    let to = nodes[index + 1]
+    let mut found = false
+    let mut best = 0
+    for edge in self.neighbors(from) {
+      if edge.to == to {
+        if !found || edge.cost < best {
+          found = true
+          best = edge.cost
+        }
+      }
+    }
+    guard found else { return None }
+    total += best
+    index += 1
+  }
+  Some(total)
 }
 
 ///|
@@ -850,9 +1011,29 @@ pub fn Grid::astar4(self : Grid, start : Point, goal : Point) -> Path[Point]? {
 }
 
 ///|
+pub fn Grid::dijkstra4(
+  self : Grid,
+  start : Point,
+  goal : Point,
+) -> Path[Point]? {
+  guard self.is_open(start) && self.is_open(goal) else { return None }
+  shortest_path(start, goal, point => self.neighbors4(point), (_a, _b) => 0)
+}
+
+///|
 pub fn Grid::astar8(self : Grid, start : Point, goal : Point) -> Path[Point]? {
   guard self.is_open(start) && self.is_open(goal) else { return None }
   shortest_path(start, goal, point => self.neighbors8(point), octile)
+}
+
+///|
+pub fn Grid::dijkstra8(
+  self : Grid,
+  start : Point,
+  goal : Point,
+) -> Path[Point]? {
+  guard self.is_open(start) && self.is_open(goal) else { return None }
+  shortest_path(start, goal, point => self.neighbors8(point), (_a, _b) => 0)
 }
 
 ///|
@@ -903,6 +1084,28 @@ fn[N : Hash + Eq] reconstruct_path(
     }
   }
   path.rev()
+}
+
+///|
+fn[N : Hash + Eq] reconstruct_bidirectional_path(
+  parents_forward : @hashmap.HashMap[N, N],
+  parents_backward : @hashmap.HashMap[N, N],
+  start : N,
+  meeting : N,
+  goal : N,
+) -> Array[N] {
+  let path = reconstruct_path(parents_forward, start, meeting)
+  let mut current = meeting
+  while current != goal {
+    match parents_backward.get(current) {
+      Some(next) => {
+        current = next
+        path.push(current)
+      }
+      None => break
+    }
+  }
+  path
 }
 
 ///|

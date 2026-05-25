@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0
+
+- Added `Graph::bidirectional_dijkstra` for shortest-path queries that search from both endpoints.
+- Added `Graph::path_cost` to validate and score explicit node paths.
+- Added `Grid::dijkstra4` and `Grid::dijkstra8` for heuristic-free grid shortest paths.
+- Expanded blackbox tests from 16 to 18 cases.
+
 ## 0.4.0
 
 - Added DFS preorder and postorder traversal helpers.

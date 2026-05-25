@@ -12,6 +12,28 @@ test "dijkstra returns lowest weighted path" {
 }
 
 ///|
+test "bidirectional dijkstra matches weighted shortest path" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 4)
+  graph.add_edge("A", "C", 1)
+  graph.add_edge("C", "B", 2)
+  graph.add_edge("B", "D", 1)
+  graph.add_edge("C", "D", 7)
+  guard graph.bidirectional_dijkstra("A", "D") is Some(path) else {
+    fail("expected a bidirectional path")
+  }
+  assert_eq(path.cost, 4)
+  assert_true(path.nodes == ["A", "C", "B", "D"])
+  assert_true(graph.path_cost(path.nodes) == Some(4))
+  assert_true(graph.bidirectional_dijkstra("D", "A") == None)
+  guard graph.bidirectional_dijkstra("A", "A") is Some(same) else {
+    fail("expected zero-length path")
+  }
+  assert_eq(same.cost, 0)
+  assert_true(same.nodes == ["A"])
+}
+
+///|
 test "bfs ignores weights and returns shallow path" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 20)
@@ -125,6 +147,26 @@ test "grid astar avoids blocked cells" {
   assert_eq(path.cost, 10)
   assert_true(path.nodes[0] == start)
   assert_true(path.nodes[path.nodes.length() - 1] == goal)
+}
+
+///|
+test "grid dijkstra matches astar costs without heuristics" {
+  let grid = @moonpath.Grid::new(4, 4)
+  grid.block_rect(@moonpath.Point::new(1, 0), 1, 2)
+  grid.set_cost(@moonpath.Point::new(2, 2), 5)
+  let start = @moonpath.Point::new(0, 0)
+  let goal = @moonpath.Point::new(3, 3)
+  guard grid.astar4(start, goal) is Some(astar4) else {
+    fail("expected astar4 path")
+  }
+  guard grid.dijkstra4(start, goal) is Some(dijkstra4) else {
+    fail("expected dijkstra4 path")
+  }
+  guard grid.dijkstra8(start, goal) is Some(dijkstra8) else {
+    fail("expected dijkstra8 path")
+  }
+  assert_eq(dijkstra4.cost, astar4.cost)
+  assert_true(dijkstra8.cost <= dijkstra4.cost * 10)
 }
 
 ///|

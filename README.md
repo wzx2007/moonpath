@@ -8,10 +8,10 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 
 - Directed weighted graph with explicit nodes and edges.
 - BFS and DFS traversal helpers for directed graphs.
-- Dijkstra shortest path for non-negative weighted graphs, plus one-source and all-pairs distance maps.
+- Dijkstra and bidirectional Dijkstra shortest paths for non-negative weighted graphs, plus explicit path scoring, one-source distance maps, and all-pairs distance maps.
 - A* search with custom heuristic functions.
 - Reachability, path existence, weak/strong connected components, connectivity predicates, graph transpose, degree queries, graph eccentricity/diameter, topological sort, acyclicity checks, and topological layers.
-- Rectangular grid helpers with blocked cells, terrain costs, rectangular bulk updates, 4-neighbor, 8-neighbor, and no-corner-cutting 8-neighbor pathfinding.
+- Rectangular grid helpers with blocked cells, terrain costs, rectangular bulk updates, 4-neighbor, 8-neighbor, no-corner-cutting 8-neighbor pathfinding, and heuristic-free Dijkstra variants.
 - Grid-to-graph conversion for users who want to reuse graph algorithms on tile maps.
 - Blackbox tests covering graph search, cycle detection, graph structure, DAG layers, DFS, all-pairs distances, connectivity, grid routing, terrain costs, corner cutting, and heuristic determinism.
 
@@ -41,11 +41,12 @@ test "dijkstra demo" {
   graph.add_edge("A", "C", 1)
   graph.add_edge("C", "B", 2)
   graph.add_edge("B", "D", 1)
-  guard graph.dijkstra("A", "D") is Some(path) else {
+  guard graph.bidirectional_dijkstra("A", "D") is Some(path) else {
     fail("expected a path")
   }
   assert_eq(path.cost, 4)
   assert_true(path.nodes == ["A", "C", "B", "D"])
+  assert_true(graph.path_cost(path.nodes) == Some(4))
 }
 ```
 
@@ -71,7 +72,7 @@ test "weighted grid demo" {
   let grid = @moonpath.Grid::new(3, 3)
   let rough = @moonpath.Point::new(1, 0)
   grid.set_cost(rough, 5)
-  guard grid.astar8(@moonpath.Point::new(0, 0), @moonpath.Point::new(2, 2)) is Some(path) else {
+  guard grid.dijkstra8(@moonpath.Point::new(0, 0), @moonpath.Point::new(2, 2)) is Some(path) else {
     fail("expected a path")
   }
   assert_eq(path.cost, 28)
@@ -157,7 +158,7 @@ moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 
 ## Roadmap
 
-- Add bidirectional Dijkstra and A*.
+- Add bidirectional A*.
 - Add graph serialization for JSON interchange.
 - Add property tests for randomized graph invariants.
 - Add benchmarks for dense graphs, sparse graphs, and large tile maps.

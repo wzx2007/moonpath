@@ -11,9 +11,12 @@ test "shortest path example" {
   graph.add_edge("A", "C", 1)
   graph.add_edge("C", "B", 2)
   graph.add_edge("B", "D", 1)
-  guard graph.dijkstra("A", "D") is Some(path) else { fail("expected a path") }
+  guard graph.bidirectional_dijkstra("A", "D") is Some(path) else {
+    fail("expected a path")
+  }
   assert_eq(path.cost, 4)
   assert_true(path.nodes == ["A", "C", "B", "D"])
+  assert_true(graph.path_cost(path.nodes) == Some(4))
 }
 ```
 
@@ -60,7 +63,7 @@ test "bulk grid example" {
 test "grid terrain example" {
   let grid = @moonpath.Grid::new(3, 3)
   grid.set_cost(@moonpath.Point::new(1, 0), 5)
-  guard grid.astar8(@moonpath.Point::new(0, 0), @moonpath.Point::new(2, 2))
+  guard grid.dijkstra8(@moonpath.Point::new(0, 0), @moonpath.Point::new(2, 2))
     is Some(path) else {
     fail("expected a path")
   }
