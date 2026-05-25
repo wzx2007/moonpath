@@ -153,6 +153,22 @@ test "bfs_tree exports first-discovery traversal edges" {
 }
 
 ///|
+test "reachable_subgraph keeps only nodes reachable from start" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 1)
+  graph.add_edge("B", "C", 2)
+  graph.add_edge("X", "Y", 3)
+  graph.add_node("Z")
+  let subgraph = graph.reachable_subgraph("A")
+  assert_eq(subgraph.node_count(), 3)
+  assert_eq(subgraph.edge_count(), 2)
+  assert_true(subgraph.contains_node("A"))
+  assert_true(subgraph.contains_edge("A", "B"))
+  assert_true(!subgraph.contains_node("X"))
+  assert_eq(graph.reachable_subgraph("missing").node_count(), 0)
+}
+
+///|
 test "grid astar avoids blocked cells" {
   let grid = @moonpath.Grid::from_blocked(5, 4, [
     @moonpath.Point::{ x: 1, y: 0 },

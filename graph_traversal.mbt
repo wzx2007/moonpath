@@ -64,6 +64,20 @@ pub fn[N : Hash + Eq] Graph::bfs_tree(
 }
 
 ///|
+pub fn[N : Hash + Eq] Graph::reachable_subgraph(
+  self : Graph[N],
+  start : N,
+) -> Graph[N] {
+  let keep : @hashset.HashSet[N] = @hashset.HashSet([])
+  for node in self.reachable(start) {
+    if self.contains_node(node) {
+      keep.add(node)
+    }
+  }
+  self.induced_subgraph(node => keep.contains(node))
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::dfs_preorder(
   self : Graph[N],
   start : N,

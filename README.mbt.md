@@ -150,6 +150,19 @@ test "bfs tree example" {
 
 ```mbt nocheck
 ///|
+test "reachable subgraph example" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 1)
+  graph.add_edge("B", "C", 2)
+  graph.add_edge("X", "Y", 3)
+  let subgraph = graph.reachable_subgraph("A")
+  assert_eq(subgraph.node_count(), 3)
+  assert_true(!subgraph.contains_node("X"))
+}
+```
+
+```mbt nocheck
+///|
 test "all pairs summary example" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 2)

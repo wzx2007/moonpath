@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.19.0
+
+- Added `Graph::reachable_subgraph` to extract the directed subgraph reachable from a start node.
+- Expanded blackbox tests from 27 to 28 cases.
+
 ## 0.18.0
 
 - Added `Graph::bfs_tree` to export first-discovery traversal tree edges from a start node.

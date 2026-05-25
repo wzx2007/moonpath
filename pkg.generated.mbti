@@ -73,6 +73,7 @@ pub fn[N] Graph::nodes(Self[N]) -> Array[N]
 pub fn[N : Hash + Eq] Graph::out_degree(Self[N], N) -> Int
 pub fn[N : Hash + Eq] Graph::path_cost(Self[N], Array[N]) -> Int?
 pub fn[N : Hash + Eq] Graph::reachable(Self[N], N) -> Array[N]
+pub fn[N : Hash + Eq] Graph::reachable_subgraph(Self[N], N) -> Self[N]
 pub fn[N : Hash + Eq] Graph::remove_edge(Self[N], N, N) -> Int
 pub fn[N : Hash + Eq] Graph::remove_node(Self[N], N) -> Bool
 pub fn[N : Hash + Eq] Graph::shortest_distance(Self[N], N, N) -> Int?
