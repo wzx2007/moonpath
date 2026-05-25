@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.23.0
+
+- Added deterministic invariant tests for generated DAGs and grid export/rebuild/inflation workflows.
+- Expanded blackbox tests from 29 to 31 cases.
+
 ## 0.22.0
 
 - Added `cmd/bench`, a deterministic benchmark smoke command for a larger grid-to-graph pathfinding scenario.

@@ -361,8 +361,8 @@ moonpath bench: nodes=571, edges=2122, open=571, components=1, cost=48, steps=48
 
 - Add bidirectional A*.
 - Add graph serialization for JSON interchange.
-- Add property tests for randomized graph invariants.
-- Add benchmarks for dense graphs, sparse graphs, and large tile maps.
+- Expand deterministic invariant tests into randomized graph and grid property suites.
+- Add measured benchmarks for dense graphs, sparse graphs, and large tile maps.
 - Publish the package after the public repository is pushed.
 
 ## License

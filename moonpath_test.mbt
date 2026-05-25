@@ -523,6 +523,78 @@ test "grid converts open cells into graph edges" {
 }
 
 ///|
+test "generated DAG invariants stay consistent" {
+  let graph = @moonpath.Graph::new()
+  let mut node = 0
+  while node < 10 {
+    graph.add_node(node)
+    node += 1
+  }
+  let mut from = 0
+  while from < 9 {
+    graph.add_edge(from, from + 1, 1)
+    if from + 2 < 10 {
+      graph.add_edge(from, from + 2, 2)
+    }
+    from += 1
+  }
+  assert_true(graph.is_acyclic())
+  assert_eq(graph.node_count(), 10)
+  assert_eq(graph.edge_count(), 17)
+  assert_true(graph.sources() == [0])
+  assert_true(graph.sinks() == [9])
+  guard graph.topological_sort() is Some(order) else {
+    fail("generated DAG should sort")
+  }
+  assert_eq(order.length(), graph.node_count())
+  guard graph.dag_longest_path(0, 9) is Some(path) else {
+    fail("expected a generated DAG path")
+  }
+  assert_eq(path.cost, 9)
+  assert_true(graph.path_cost(path.nodes) == Some(path.cost))
+
+  let reversed = graph.transpose()
+  assert_eq(reversed.node_count(), graph.node_count())
+  assert_eq(reversed.edge_count(), graph.edge_count())
+  for arc in graph.arcs() {
+    assert_true(reversed.contains_edge(arc.to, arc.from))
+  }
+}
+
+///|
+test "grid export rebuild and inflation invariants stay consistent" {
+  let grid = @moonpath.Grid::new(6, 5)
+  grid.block_rect(@moonpath.Point::new(2, 1), 2, 2)
+  grid.set_cost_rect(@moonpath.Point::new(0, 0), 3, 1, 4)
+  let rebuilt = @moonpath.Grid::from_parts(
+    6,
+    5,
+    grid.blocked_points(),
+    grid.terrain_cells(),
+  )
+  assert_eq(rebuilt.points().length(), 30)
+  assert_eq(rebuilt.blocked_points().length(), grid.blocked_points().length())
+  assert_eq(
+    rebuilt.open_points().length() + rebuilt.blocked_points().length(),
+    30,
+  )
+  assert_true(rebuilt.terrain_cost(@moonpath.Point::new(1, 0)) == Some(4))
+
+  let inflated = rebuilt.inflated_blocks(1)
+  assert_true(
+    inflated.blocked_points().length() >= rebuilt.blocked_points().length(),
+  )
+  assert_eq(inflated.points().length(), rebuilt.points().length())
+  assert_true(inflated.terrain_cost(@moonpath.Point::new(1, 0)) == Some(4))
+  let graph4 = rebuilt.to_graph4()
+  assert_eq(graph4.node_count(), rebuilt.open_points().length())
+  for arc in graph4.arcs() {
+    assert_true(rebuilt.is_open(arc.from))
+    assert_true(rebuilt.is_open(arc.to))
+  }
+}
+
+///|
 fn[N : Eq] contains(items : Array[N], value : N) -> Bool {
   for item in items {
     if item == value {
