@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.0
+
+- Added `Path::node_count` and `Path::edge_count`.
+- Added `Grid::path_cost4`, `Grid::path_cost8`, `Grid::path_valid4`, and `Grid::path_valid8` for validating saved or post-processed grid paths.
+- Expanded existing tests to cover path metrics and grid path validation.
+
 ## 0.9.0
 
 - Added `Grid::line_of_sight` using integer grid ray traversal.

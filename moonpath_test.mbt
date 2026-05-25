@@ -9,6 +9,8 @@ test "dijkstra returns lowest weighted path" {
   guard graph.dijkstra("A", "D") is Some(path) else { fail("expected a path") }
   assert_eq(path.cost, 4)
   assert_true(path.nodes == ["A", "C", "B", "D"])
+  assert_eq(path.node_count(), 4)
+  assert_eq(path.edge_count(), 3)
 }
 
 ///|
@@ -167,6 +169,11 @@ test "grid dijkstra matches astar costs without heuristics" {
   }
   assert_eq(dijkstra4.cost, astar4.cost)
   assert_true(dijkstra8.cost <= dijkstra4.cost * 10)
+  assert_true(grid.path_valid4(dijkstra4.nodes))
+  assert_true(grid.path_cost4(dijkstra4.nodes) == Some(dijkstra4.cost))
+  assert_true(grid.path_valid8(dijkstra8.nodes))
+  assert_true(grid.path_cost8(dijkstra8.nodes) == Some(dijkstra8.cost))
+  assert_true(!grid.path_valid4([start, goal]))
 }
 
 ///|

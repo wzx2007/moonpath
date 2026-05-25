@@ -10,11 +10,13 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 - Edge-list export and reconstruction with `Arc[N]`, plus node-filtered induced subgraphs.
 - BFS and DFS traversal helpers for directed graphs.
 - Dijkstra and bidirectional Dijkstra shortest paths for non-negative weighted graphs, plus explicit path scoring, one-source distance maps, and all-pairs distance maps.
+- Path result helpers for node and edge counts.
 - A* search with custom heuristic functions.
 - Reachability, path existence, weak/strong connected components, connectivity predicates, graph transpose, degree queries, graph eccentricity/diameter, topological sort, acyclicity checks, and topological layers.
 - Rectangular grid helpers with blocked cells, terrain costs, rectangular bulk updates, 4-neighbor, 8-neighbor, no-corner-cutting 8-neighbor pathfinding, and heuristic-free Dijkstra variants.
 - Grid export/rebuild helpers for blocked cells and terrain overrides.
 - Grid line-of-sight checks and greedy path smoothing for reducing unnecessary waypoints.
+- Grid path validation and path cost recomputation for 4-neighbor and 8-neighbor paths.
 - Grid-to-graph conversion for users who want to reuse graph algorithms on tile maps.
 - Blackbox tests covering graph search, cycle detection, graph structure, DAG layers, DFS, all-pairs distances, connectivity, grid routing, terrain costs, corner cutting, and heuristic determinism.
 
@@ -166,6 +168,21 @@ test "smooth path demo" {
   let jagged = [start, @moonpath.Point::new(1, 0), @moonpath.Point::new(4, 3), goal]
   assert_true(grid.line_of_sight(start, goal))
   assert_true(grid.smooth_path(jagged) == [start, goal])
+}
+```
+
+Path validation:
+
+```moonbit
+test "grid path validation demo" {
+  let grid = @moonpath.Grid::new(3, 3)
+  guard grid.dijkstra4(@moonpath.Point::new(0, 0), @moonpath.Point::new(2, 2))
+    is Some(path) else {
+    fail("expected a path")
+  }
+  assert_eq(path.edge_count(), path.nodes.length() - 1)
+  assert_true(grid.path_valid4(path.nodes))
+  assert_true(grid.path_cost4(path.nodes) == Some(path.cost))
 }
 ```
 

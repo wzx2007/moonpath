@@ -45,6 +45,20 @@ pub fn[N : Hash + Eq] Graph::bfs(
 }
 
 ///|
+pub fn[N] Path::node_count(self : Path[N]) -> Int {
+  self.nodes.length()
+}
+
+///|
+pub fn[N] Path::edge_count(self : Path[N]) -> Int {
+  if self.nodes.length() == 0 {
+    0
+  } else {
+    self.nodes.length() - 1
+  }
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::dijkstra(
   self : Graph[N],
   start : N,

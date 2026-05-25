@@ -22,6 +22,20 @@ test "shortest path example" {
 
 ```mbt nocheck
 ///|
+test "grid path validation example" {
+  let grid = @moonpath.Grid::new(3, 3)
+  guard grid.dijkstra4(@moonpath.Point::new(0, 0), @moonpath.Point::new(2, 2))
+    is Some(path) else {
+    fail("expected a path")
+  }
+  assert_eq(path.edge_count(), path.nodes.length() - 1)
+  assert_true(grid.path_valid4(path.nodes))
+  assert_true(grid.path_cost4(path.nodes) == Some(path.cost))
+}
+```
+
+```mbt nocheck
+///|
 test "path smoothing example" {
   let grid = @moonpath.Grid::new(5, 5)
   let start = @moonpath.Point::new(0, 0)

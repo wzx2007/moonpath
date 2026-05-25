@@ -233,6 +233,26 @@ pub fn Grid::smooth_path(self : Grid, nodes : Array[Point]) -> Array[Point] {
 }
 
 ///|
+pub fn Grid::path_cost4(self : Grid, nodes : Array[Point]) -> Int? {
+  self.path_cost_by(nodes, point => self.neighbors4(point))
+}
+
+///|
+pub fn Grid::path_cost8(self : Grid, nodes : Array[Point]) -> Int? {
+  self.path_cost_by(nodes, point => self.neighbors8(point))
+}
+
+///|
+pub fn Grid::path_valid4(self : Grid, nodes : Array[Point]) -> Bool {
+  self.path_cost4(nodes) is Some(_)
+}
+
+///|
+pub fn Grid::path_valid8(self : Grid, nodes : Array[Point]) -> Bool {
+  self.path_cost8(nodes) is Some(_)
+}
+
+///|
 pub fn Grid::neighbors4(self : Grid, point : Point) -> Array[Edge[Point]] {
   let out : Array[Edge[Point]] = []
   for
@@ -421,6 +441,37 @@ fn Grid::assert_rect(
     top_left.y + height <= self.height else {
     abort("rectangle is outside grid")
   }
+}
+
+///|
+fn Grid::path_cost_by(
+  self : Grid,
+  nodes : Array[Point],
+  neighbors : (Point) -> Array[Edge[Point]],
+) -> Int? {
+  guard nodes.length() > 0 else { return None }
+  guard self.is_open(nodes[0]) else { return None }
+  let mut total = 0
+  let mut index = 0
+  while index + 1 < nodes.length() {
+    let from = nodes[index]
+    let to = nodes[index + 1]
+    guard self.is_open(to) else { return None }
+    let mut found = false
+    let mut best = 0
+    for edge in neighbors(from) {
+      if edge.to == to {
+        if !found || edge.cost < best {
+          found = true
+          best = edge.cost
+        }
+      }
+    }
+    guard found else { return None }
+    total += best
+    index += 1
+  }
+  Some(total)
 }
 
 ///|

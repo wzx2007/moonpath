@@ -100,6 +100,10 @@ pub fn Grid::neighbors8(Self, Point) -> Array[Edge[Point]]
 pub fn Grid::neighbors8_no_corner_cutting(Self, Point) -> Array[Edge[Point]]
 pub fn Grid::new(Int, Int) -> Self
 pub fn Grid::open_points(Self) -> Array[Point]
+pub fn Grid::path_cost4(Self, Array[Point]) -> Int?
+pub fn Grid::path_cost8(Self, Array[Point]) -> Int?
+pub fn Grid::path_valid4(Self, Array[Point]) -> Bool
+pub fn Grid::path_valid8(Self, Array[Point]) -> Bool
 pub fn Grid::points(Self) -> Array[Point]
 pub fn Grid::set_cost(Self, Point, Int) -> Unit
 pub fn Grid::set_cost_rect(Self, Point, Int, Int, Int) -> Unit
@@ -116,6 +120,8 @@ pub(all) struct Path[N] {
   nodes : Array[N]
   visited : Int
 } derive(Eq, @debug.Debug)
+pub fn[N] Path::edge_count(Self[N]) -> Int
+pub fn[N] Path::node_count(Self[N]) -> Int
 
 pub(all) struct Point {
   x : Int
