@@ -104,6 +104,7 @@ pub fn Grid::dijkstra4(Self, Point, Point) -> Path[Point]?
 pub fn Grid::dijkstra8(Self, Point, Point) -> Path[Point]?
 pub fn Grid::from_blocked(Int, Int, Array[Point]) -> Self
 pub fn Grid::from_parts(Int, Int, Array[Point], Array[CellCost]) -> Self
+pub fn Grid::inflated_blocks(Self, Int) -> Self
 pub fn Grid::is_blocked(Self, Point) -> Bool
 pub fn Grid::is_open(Self, Point) -> Bool
 pub fn Grid::line_of_sight(Self, Point, Point) -> Bool

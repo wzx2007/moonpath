@@ -55,6 +55,34 @@ pub fn Grid::resized(self : Grid, width : Int, height : Int) -> Grid {
 }
 
 ///|
+pub fn Grid::inflated_blocks(self : Grid, radius : Int) -> Grid {
+  guard radius >= 0 else {
+    abort("block inflation radius must be non-negative")
+  }
+  let grid = Grid::from_parts(
+    self.width,
+    self.height,
+    self.blocked_points(),
+    self.terrain_cells(),
+  )
+  for point in self.blocked_points() {
+    let mut dy = -radius
+    while dy <= radius {
+      let mut dx = -radius
+      while dx <= radius {
+        let next = point.offset(dx, dy)
+        if grid.contains(next) {
+          grid.block(next)
+        }
+        dx += 1
+      }
+      dy += 1
+    }
+  }
+  grid
+}
+
+///|
 pub fn Point::new(x : Int, y : Int) -> Point {
   Point::{ x, y }
 }

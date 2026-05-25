@@ -47,6 +47,7 @@ Let `N = width * height`.
 | `Grid::open_points` | O(N) | O(N) | Filters blocked cells. |
 | `Grid::set_cost` / `Grid::clear_cost` | O(1) average | O(1) | Updates one terrain override. |
 | `Grid::set_cost_rect` / `Grid::clear_cost_rect` | O(W * H) | O(1) | Updates terrain overrides across a rectangle. |
+| `Grid::inflated_blocks` | O(B * R^2) | O(N) | Expands `B` blocked cells by radius `R` into a copied grid. |
 | `Grid::neighbors4` / `Grid::neighbors8` | O(1) | O(1) | Checks a fixed number of candidate neighbors. |
 | `Grid::astar4` / `Grid::astar8` | O(N log N) worst case | O(N) | Uses Manhattan or Octile heuristics. |
 | `Grid::dijkstra4` / `Grid::dijkstra8` | O(N log N) | O(N) | Heuristic-free shortest path. |
@@ -62,4 +63,5 @@ Let `N = width * height`.
 - Use `astar4` or `astar8` for grid maps with a clear geometric heuristic.
 - Use `dijkstra4` or `dijkstra8` when terrain costs dominate and heuristic guidance is not useful.
 - Use `try_from_arcs` for external or user-provided graph data.
+- Use `inflated_blocks` before grid search when the moving agent needs clearance around blocked cells.
 - Use `line_of_sight` and `smooth_path` after grid search when consumers prefer fewer waypoints.

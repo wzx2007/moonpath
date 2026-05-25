@@ -390,6 +390,23 @@ test "grid resized preserves in-bounds blocked and terrain cells" {
 }
 
 ///|
+test "grid inflated_blocks expands obstacle clearance" {
+  let grid = @moonpath.Grid::new(5, 5)
+  grid.block(@moonpath.Point::new(2, 2))
+  grid.set_cost(@moonpath.Point::new(4, 4), 6)
+  let inflated = grid.inflated_blocks(1)
+  assert_eq(inflated.blocked_points().length(), 9)
+  assert_true(inflated.is_blocked(@moonpath.Point::new(1, 1)))
+  assert_true(inflated.is_blocked(@moonpath.Point::new(3, 3)))
+  assert_true(!inflated.is_blocked(@moonpath.Point::new(0, 0)))
+  assert_true(inflated.terrain_cost(@moonpath.Point::new(4, 4)) == Some(6))
+
+  let unchanged = grid.inflated_blocks(0)
+  assert_eq(unchanged.blocked_points().length(), 1)
+  assert_true(unchanged.is_blocked(@moonpath.Point::new(2, 2)))
+}
+
+///|
 test "grid smooth_path removes unnecessary waypoints" {
   let grid = @moonpath.Grid::new(5, 5)
   let start = @moonpath.Point::new(0, 0)

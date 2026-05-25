@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.17.0
+
+- Added `Grid::inflated_blocks` to create obstacle-expanded grid copies for clearance-aware pathfinding.
+- Expanded blackbox tests from 25 to 26 cases.
+
 ## 0.16.0
 
 - Added `Grid::clear_cost` and `Grid::clear_cost_rect` for removing terrain-cost overrides from dynamic maps.

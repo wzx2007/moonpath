@@ -59,6 +59,18 @@ test "grid resize example" {
 
 ```mbt nocheck
 ///|
+test "obstacle inflation example" {
+  let grid = @moonpath.Grid::new(5, 5)
+  grid.block(@moonpath.Point::new(2, 2))
+  let inflated = grid.inflated_blocks(1)
+  assert_eq(inflated.blocked_points().length(), 9)
+  assert_true(inflated.is_blocked(@moonpath.Point::new(1, 1)))
+  assert_true(!inflated.is_blocked(@moonpath.Point::new(0, 0)))
+}
+```
+
+```mbt nocheck
+///|
 test "dynamic graph update example" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 1)
