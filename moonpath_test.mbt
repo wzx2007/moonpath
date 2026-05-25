@@ -219,6 +219,20 @@ test "graph mutation removes edges and nodes" {
 }
 
 ///|
+test "graph edge cost summaries inspect weighted data" {
+  let graph = @moonpath.Graph::new()
+  assert_eq(graph.total_edge_cost(), 0)
+  assert_true(graph.min_edge_cost() == None)
+  assert_true(graph.max_edge_cost() == None)
+  graph.add_edge("A", "B", 5)
+  graph.add_edge("B", "C", 2)
+  graph.add_edge("C", "D", 9)
+  assert_eq(graph.total_edge_cost(), 16)
+  assert_true(graph.min_edge_cost() == Some(2))
+  assert_true(graph.max_edge_cost() == Some(9))
+}
+
+///|
 test "graph arcs and induced subgraphs support export workflows" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 2)

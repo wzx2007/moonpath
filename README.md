@@ -8,6 +8,7 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 
 - Directed weighted graph with explicit nodes and edges.
 - Dynamic graph mutation with edge removal, node removal, and edge clearing.
+- Weighted graph summaries for total, minimum, and maximum edge cost.
 - Edge-list export and reconstruction with `Arc[N]`, plus node-filtered induced subgraphs.
 - Safe all-or-nothing graph construction from external edge lists with `try_from_arcs`.
 - BFS and DFS traversal helpers for directed graphs.
@@ -165,6 +166,19 @@ test "mutation demo" {
   assert_eq(graph.remove_edge("A", "B"), 1)
   assert_true(!graph.contains_edge("A", "B"))
   assert_true(graph.remove_node("C"))
+}
+```
+
+Weighted graph summaries:
+
+```moonbit
+test "weight summary demo" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 5)
+  graph.add_edge("B", "C", 2)
+  assert_eq(graph.total_edge_cost(), 7)
+  assert_true(graph.min_edge_cost() == Some(2))
+  assert_true(graph.max_edge_cost() == Some(5))
 }
 ```
 

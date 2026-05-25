@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.14.0
+
+- Added `Graph::total_edge_cost`, `Graph::min_edge_cost`, and `Graph::max_edge_cost` for weighted graph summaries.
+- Expanded blackbox tests from 24 to 25 cases.
+
 ## 0.13.0
 
 - Added `Grid::resized` to create expanded or cropped grid copies while preserving in-bounds blocked cells and terrain costs.

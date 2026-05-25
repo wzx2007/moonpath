@@ -22,6 +22,18 @@ test "shortest path example" {
 
 ```mbt nocheck
 ///|
+test "weighted graph summary example" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 5)
+  graph.add_edge("B", "C", 2)
+  assert_eq(graph.total_edge_cost(), 7)
+  assert_true(graph.min_edge_cost() == Some(2))
+  assert_true(graph.max_edge_cost() == Some(5))
+}
+```
+
+```mbt nocheck
+///|
 test "grid resize example" {
   let grid = @moonpath.Grid::new(4, 4)
   grid.block(@moonpath.Point::new(1, 1))

@@ -62,6 +62,8 @@ pub fn[N : Hash + Eq] Graph::induced_subgraph(Self[N], (N) -> Bool) -> Self[N]
 pub fn[N : Hash + Eq] Graph::is_acyclic(Self[N]) -> Bool
 pub fn[N : Hash + Eq] Graph::is_strongly_connected(Self[N]) -> Bool
 pub fn[N : Hash + Eq] Graph::is_weakly_connected(Self[N]) -> Bool
+pub fn[N] Graph::max_edge_cost(Self[N]) -> Int?
+pub fn[N] Graph::min_edge_cost(Self[N]) -> Int?
 pub fn[N : Hash + Eq] Graph::neighbors(Self[N], N) -> Array[Edge[N]]
 pub fn[N : Hash + Eq] Graph::new() -> Self[N]
 pub fn[N] Graph::node_count(Self[N]) -> Int
@@ -75,6 +77,7 @@ pub fn[N : Hash + Eq] Graph::shortest_distance(Self[N], N, N) -> Int?
 pub fn[N : Hash + Eq] Graph::strongly_connected_components(Self[N]) -> Array[Array[N]]
 pub fn[N : Hash + Eq] Graph::topological_layers(Self[N]) -> Array[Array[N]]?
 pub fn[N : Hash + Eq] Graph::topological_sort(Self[N]) -> Array[N]?
+pub fn[N] Graph::total_edge_cost(Self[N]) -> Int
 pub fn[N : Hash + Eq] Graph::transpose(Self[N]) -> Self[N]
 pub fn[N : Hash + Eq] Graph::try_from_arcs(Array[Arc[N]]) -> Self[N]?
 pub fn[N : Hash + Eq] Graph::weakly_connected_components(Self[N]) -> Array[Array[N]]

@@ -106,6 +106,45 @@ pub fn[N] Graph::edge_count(self : Graph[N]) -> Int {
 }
 
 ///|
+pub fn[N] Graph::total_edge_cost(self : Graph[N]) -> Int {
+  let mut total = 0
+  self.adjacency.each((_node, edges) => {
+    for edge in edges {
+      total += edge.cost
+    }
+  })
+  total
+}
+
+///|
+pub fn[N] Graph::min_edge_cost(self : Graph[N]) -> Int? {
+  let mut best : Int? = None
+  self.adjacency.each((_node, edges) => {
+    for edge in edges {
+      match best {
+        Some(value) => if edge.cost < value { best = Some(edge.cost) }
+        None => best = Some(edge.cost)
+      }
+    }
+  })
+  best
+}
+
+///|
+pub fn[N] Graph::max_edge_cost(self : Graph[N]) -> Int? {
+  let mut best : Int? = None
+  self.adjacency.each((_node, edges) => {
+    for edge in edges {
+      match best {
+        Some(value) => if edge.cost > value { best = Some(edge.cost) }
+        None => best = Some(edge.cost)
+      }
+    }
+  })
+  best
+}
+
+///|
 pub fn[N] Graph::arcs(self : Graph[N]) -> Array[Arc[N]] {
   let out : Array[Arc[N]] = []
   self.adjacency.each((from, edges) => {
