@@ -116,11 +116,15 @@ pub fn Grid::neighbors8(Self, Point) -> Array[Edge[Point]]
 pub fn Grid::neighbors8_no_corner_cutting(Self, Point) -> Array[Edge[Point]]
 pub fn Grid::new(Int, Int) -> Self
 pub fn Grid::open_points(Self) -> Array[Point]
+pub fn Grid::open_regions4(Self) -> Array[Array[Point]]
+pub fn Grid::open_regions8(Self) -> Array[Array[Point]]
 pub fn Grid::path_cost4(Self, Array[Point]) -> Int?
 pub fn Grid::path_cost8(Self, Array[Point]) -> Int?
 pub fn Grid::path_valid4(Self, Array[Point]) -> Bool
 pub fn Grid::path_valid8(Self, Array[Point]) -> Bool
 pub fn Grid::points(Self) -> Array[Point]
+pub fn Grid::reachable_points4(Self, Point) -> Array[Point]
+pub fn Grid::reachable_points8(Self, Point) -> Array[Point]
 pub fn Grid::resized(Self, Int, Int) -> Self
 pub fn Grid::set_cost(Self, Point, Int) -> Unit
 pub fn Grid::set_cost_rect(Self, Point, Int, Int, Int) -> Unit

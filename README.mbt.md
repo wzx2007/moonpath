@@ -71,6 +71,19 @@ test "obstacle inflation example" {
 
 ```mbt nocheck
 ///|
+test "grid region example" {
+  let grid = @moonpath.Grid::new(2, 2)
+  grid.block(@moonpath.Point::new(1, 0))
+  grid.block(@moonpath.Point::new(0, 1))
+  assert_eq(grid.reachable_points4(@moonpath.Point::new(0, 0)).length(), 1)
+  assert_eq(grid.reachable_points8(@moonpath.Point::new(0, 0)).length(), 2)
+  assert_eq(grid.open_regions4().length(), 2)
+  assert_eq(grid.open_regions8().length(), 1)
+}
+```
+
+```mbt nocheck
+///|
 test "dynamic graph update example" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 1)

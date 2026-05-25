@@ -328,6 +328,26 @@ pub fn Grid::path_valid8(self : Grid, nodes : Array[Point]) -> Bool {
 }
 
 ///|
+pub fn Grid::reachable_points4(self : Grid, start : Point) -> Array[Point] {
+  self.reachable_points_by(start, point => self.neighbors4(point))
+}
+
+///|
+pub fn Grid::reachable_points8(self : Grid, start : Point) -> Array[Point] {
+  self.reachable_points_by(start, point => self.neighbors8(point))
+}
+
+///|
+pub fn Grid::open_regions4(self : Grid) -> Array[Array[Point]] {
+  self.open_regions_by(point => self.neighbors4(point))
+}
+
+///|
+pub fn Grid::open_regions8(self : Grid) -> Array[Array[Point]] {
+  self.open_regions_by(point => self.neighbors8(point))
+}
+
+///|
 pub fn Grid::neighbors4(self : Grid, point : Point) -> Array[Edge[Point]] {
   let out : Array[Edge[Point]] = []
   for
@@ -547,6 +567,51 @@ fn Grid::path_cost_by(
     index += 1
   }
   Some(total)
+}
+
+///|
+fn Grid::reachable_points_by(
+  self : Grid,
+  start : Point,
+  neighbors : (Point) -> Array[Edge[Point]],
+) -> Array[Point] {
+  guard self.is_open(start) else { return [] }
+  let visited : @hashset.HashSet[Point] = @hashset.HashSet([])
+  let queue : Array[Point] = []
+  let mut head = 0
+  visited.add(start)
+  queue.push(start)
+  while head < queue.length() {
+    let current = queue[head]
+    head += 1
+    for edge in neighbors(current) {
+      if !visited.contains(edge.to) {
+        visited.add(edge.to)
+        queue.push(edge.to)
+      }
+    }
+  }
+  queue
+}
+
+///|
+fn Grid::open_regions_by(
+  self : Grid,
+  neighbors : (Point) -> Array[Edge[Point]],
+) -> Array[Array[Point]] {
+  let seen : @hashset.HashSet[Point] = @hashset.HashSet([])
+  let regions : Array[Array[Point]] = []
+  for point in self.open_points() {
+    if seen.contains(point) {
+      continue
+    }
+    let region = self.reachable_points_by(point, neighbors)
+    for item in region {
+      seen.add(item)
+    }
+    regions.push(region)
+  }
+  regions
 }
 
 ///|

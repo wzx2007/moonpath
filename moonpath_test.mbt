@@ -523,6 +523,21 @@ test "grid converts open cells into graph edges" {
 }
 
 ///|
+test "grid reachability and open regions distinguish 4 and 8 neighbors" {
+  let grid = @moonpath.Grid::new(2, 2)
+  let start = @moonpath.Point::new(0, 0)
+  let diagonal = @moonpath.Point::new(1, 1)
+  grid.block(@moonpath.Point::new(1, 0))
+  grid.block(@moonpath.Point::new(0, 1))
+  assert_eq(grid.reachable_points4(start).length(), 1)
+  assert_eq(grid.reachable_points8(start).length(), 2)
+  assert_true(contains(grid.reachable_points8(start), diagonal))
+  assert_eq(grid.open_regions4().length(), 2)
+  assert_eq(grid.open_regions8().length(), 1)
+  assert_true(grid.reachable_points4(@moonpath.Point::new(1, 0)).length() == 0)
+}
+
+///|
 test "generated DAG invariants stay consistent" {
   let graph = @moonpath.Graph::new()
   let mut node = 0

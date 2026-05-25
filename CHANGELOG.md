@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.24.0
+
+- Added `Grid::reachable_points4`, `Grid::reachable_points8`, `Grid::open_regions4`, and `Grid::open_regions8` for map connectivity analysis.
+- Expanded blackbox tests from 31 to 32 cases.
+
 ## 0.23.0
 
 - Added deterministic invariant tests for generated DAGs and grid export/rebuild/inflation workflows.
