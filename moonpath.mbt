@@ -43,6 +43,12 @@ priv struct HeapItem[N] {
 }
 
 ///|
+priv struct DfsFrame[N] {
+  node : N
+  expanded : Bool
+}
+
+///|
 priv struct PriorityQueue[N] {
   heap : Array[HeapItem[N]]
   mut next_seq : Int
@@ -257,6 +263,39 @@ pub fn[N : Hash + Eq] Graph::shortest_distance(
 }
 
 ///|
+pub fn[N : Hash + Eq] Graph::all_pairs_distances(
+  self : Graph[N],
+) -> @hashmap.HashMap[N, @hashmap.HashMap[N, Int]] {
+  let out : @hashmap.HashMap[N, @hashmap.HashMap[N, Int]] = @hashmap.HashMap([])
+  for node in self.nodes() {
+    out.set(node, self.distances_from(node))
+  }
+  out
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::eccentricity(self : Graph[N], start : N) -> Int? {
+  guard self.contains_node(start) else { return None }
+  let distances = self.distances_from(start)
+  let mut best = 0
+  distances.each((_node, cost) => if cost > best { best = cost })
+  Some(best)
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::diameter(self : Graph[N]) -> Int? {
+  guard self.node_count() > 0 else { return None }
+  let mut best = 0
+  for node in self.nodes() {
+    match self.eccentricity(node) {
+      Some(value) => if value > best { best = value }
+      None => ()
+    }
+  }
+  Some(best)
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::reachable(self : Graph[N], start : N) -> Array[N] {
   let visited : @hashset.HashSet[N] = @hashset.HashSet([])
   let queue : Array[N] = []
@@ -274,6 +313,72 @@ pub fn[N : Hash + Eq] Graph::reachable(self : Graph[N], start : N) -> Array[N] {
     }
   }
   visited.to_array()
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::has_path(
+  self : Graph[N],
+  start : N,
+  goal : N,
+) -> Bool {
+  for node in self.reachable(start) {
+    if node == goal {
+      return true
+    }
+  }
+  false
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::dfs_preorder(
+  self : Graph[N],
+  start : N,
+) -> Array[N] {
+  let visited : @hashset.HashSet[N] = @hashset.HashSet([])
+  let stack : Array[N] = [start]
+  let order : Array[N] = []
+  while stack.length() > 0 {
+    let current = stack.unsafe_pop()
+    if visited.contains(current) {
+      continue
+    }
+    visited.add(current)
+    order.push(current)
+    for edge in self.neighbors(current).rev() {
+      if !visited.contains(edge.to) {
+        stack.push(edge.to)
+      }
+    }
+  }
+  order
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::dfs_postorder(
+  self : Graph[N],
+  start : N,
+) -> Array[N] {
+  let visited : @hashset.HashSet[N] = @hashset.HashSet([])
+  let stack : Array[DfsFrame[N]] = [DfsFrame::{ node: start, expanded: false }]
+  let order : Array[N] = []
+  while stack.length() > 0 {
+    let frame = stack.unsafe_pop()
+    if frame.expanded {
+      order.push(frame.node)
+      continue
+    }
+    if visited.contains(frame.node) {
+      continue
+    }
+    visited.add(frame.node)
+    stack.push(DfsFrame::{ node: frame.node, expanded: true })
+    for edge in self.neighbors(frame.node).rev() {
+      if !visited.contains(edge.to) {
+        stack.push(DfsFrame::{ node: edge.to, expanded: false })
+      }
+    }
+  }
+  order
 }
 
 ///|
@@ -311,6 +416,11 @@ pub fn[N : Hash + Eq] Graph::weakly_connected_components(
 }
 
 ///|
+pub fn[N : Hash + Eq] Graph::is_weakly_connected(self : Graph[N]) -> Bool {
+  self.weakly_connected_components().length() <= 1
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::strongly_connected_components(
   self : Graph[N],
 ) -> Array[Array[N]] {
@@ -334,6 +444,11 @@ pub fn[N : Hash + Eq] Graph::strongly_connected_components(
     }
   }
   components
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::is_strongly_connected(self : Graph[N]) -> Bool {
+  self.strongly_connected_components().length() <= 1
 }
 
 ///|
@@ -551,10 +666,68 @@ pub fn Grid::unblock(self : Grid, point : Point) -> Unit {
 }
 
 ///|
+pub fn Grid::block_rect(
+  self : Grid,
+  top_left : Point,
+  width : Int,
+  height : Int,
+) -> Unit {
+  self.assert_rect(top_left, width, height)
+  let mut y = 0
+  while y < height {
+    let mut x = 0
+    while x < width {
+      self.block(top_left.offset(x, y))
+      x += 1
+    }
+    y += 1
+  }
+}
+
+///|
+pub fn Grid::unblock_rect(
+  self : Grid,
+  top_left : Point,
+  width : Int,
+  height : Int,
+) -> Unit {
+  self.assert_rect(top_left, width, height)
+  let mut y = 0
+  while y < height {
+    let mut x = 0
+    while x < width {
+      self.unblock(top_left.offset(x, y))
+      x += 1
+    }
+    y += 1
+  }
+}
+
+///|
 pub fn Grid::set_cost(self : Grid, point : Point, cost : Int) -> Unit {
   guard self.contains(point) else { abort("cost point is outside grid") }
   guard cost > 0 else { abort("terrain cost must be positive") }
   self.terrain.set(point, cost)
+}
+
+///|
+pub fn Grid::set_cost_rect(
+  self : Grid,
+  top_left : Point,
+  width : Int,
+  height : Int,
+  cost : Int,
+) -> Unit {
+  self.assert_rect(top_left, width, height)
+  let mut y = 0
+  while y < height {
+    let mut x = 0
+    while x < width {
+      self.set_cost(top_left.offset(x, y), cost)
+      x += 1
+    }
+    y += 1
+  }
 }
 
 ///|
@@ -755,6 +928,24 @@ fn[N : Hash + Eq] path_edge_count(
 ///|
 fn Grid::terrain_cost_unchecked(self : Grid, point : Point) -> Int {
   self.terrain.get_or_default(point, 1)
+}
+
+///|
+fn Grid::assert_rect(
+  self : Grid,
+  top_left : Point,
+  width : Int,
+  height : Int,
+) -> Unit {
+  guard width >= 0 && height >= 0 else {
+    abort("rectangle width and height must be non-negative")
+  }
+  guard top_left.x >= 0 &&
+    top_left.y >= 0 &&
+    top_left.x + width <= self.width &&
+    top_left.y + height <= self.height else {
+    abort("rectangle is outside grid")
+  }
 }
 
 ///|

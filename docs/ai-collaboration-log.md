@@ -10,7 +10,7 @@
 - 采用原创实现，不复制或移植特定开源项目代码。
 - 优先实现小而完整的核心 API，确保可构建、可测试、可演示。
 - 使用 `shortest_path` 复用 Dijkstra 与 A* 内核。
-- 扩展 weak/strong connected components、graph transpose、single-source distance map、topological layers、terrain costs、no-corner-cutting pathfinding 和 grid-to-graph，让项目更接近可复用基础库。
+- 扩展 DFS、path existence、weak/strong connected components、graph transpose、single-source distance map、all-pairs distance map、eccentricity、diameter、topological layers、terrain costs、rectangular grid updates、no-corner-cutting pathfinding 和 grid-to-graph，让项目更接近可复用基础库。
 - 将必须由参赛者本人完成的账号、报名和 PDF 提交动作单独列入清单。
 
 ## 验证
@@ -25,4 +25,4 @@ moon run cmd/main
 moon info
 ```
 
-测试结果：13 passed, 0 failed。
+测试结果：16 passed, 0 failed。

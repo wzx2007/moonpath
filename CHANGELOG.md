@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0
+
+- Added DFS preorder and postorder traversal helpers.
+- Added `Graph::has_path`, `Graph::all_pairs_distances`, `Graph::eccentricity`, and `Graph::diameter`.
+- Added weak/strong connectivity predicates for quick graph classification.
+- Added rectangular bulk grid updates with `block_rect`, `unblock_rect`, and `set_cost_rect`.
+- Expanded blackbox tests from 13 to 16 cases.
+
 ## 0.3.0
 
 - Added `Graph::distances_from` and `Graph::shortest_distance` for one-source distance analysis.

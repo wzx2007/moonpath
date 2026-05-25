@@ -7,13 +7,13 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 ## Features
 
 - Directed weighted graph with explicit nodes and edges.
-- BFS for shallow unweighted paths.
-- Dijkstra shortest path for non-negative weighted graphs, plus distance maps from one source.
+- BFS and DFS traversal helpers for directed graphs.
+- Dijkstra shortest path for non-negative weighted graphs, plus one-source and all-pairs distance maps.
 - A* search with custom heuristic functions.
-- Reachability, weak/strong connected components, graph transpose, degree queries, topological sort, acyclicity checks, and topological layers.
-- Rectangular grid helpers with blocked cells, terrain costs, 4-neighbor, 8-neighbor, and no-corner-cutting 8-neighbor pathfinding.
+- Reachability, path existence, weak/strong connected components, connectivity predicates, graph transpose, degree queries, graph eccentricity/diameter, topological sort, acyclicity checks, and topological layers.
+- Rectangular grid helpers with blocked cells, terrain costs, rectangular bulk updates, 4-neighbor, 8-neighbor, and no-corner-cutting 8-neighbor pathfinding.
 - Grid-to-graph conversion for users who want to reuse graph algorithms on tile maps.
-- Blackbox tests covering graph search, cycle detection, graph structure, DAG layers, grid routing, terrain costs, corner cutting, and heuristic determinism.
+- Blackbox tests covering graph search, cycle detection, graph structure, DAG layers, DFS, all-pairs distances, connectivity, grid routing, terrain costs, corner cutting, and heuristic determinism.
 
 ## Install
 
@@ -102,6 +102,33 @@ test "analysis demo" {
   let distances = graph.distances_from("parse")
   assert_eq(distances.get_or_default("package", -1), 5)
   assert_true(graph.topological_layers() is Some(_))
+}
+```
+
+All-pairs distances and graph summary:
+
+```moonbit
+test "summary demo" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 2)
+  graph.add_edge("B", "C", 3)
+  let all = graph.all_pairs_distances()
+  guard all.get("A") is Some(from_a) else { fail("missing A") }
+  assert_eq(from_a.get_or_default("C", -1), 5)
+  assert_true(graph.has_path("A", "C"))
+  assert_true(graph.diameter() == Some(5))
+}
+```
+
+Bulk grid updates:
+
+```moonbit
+test "bulk grid demo" {
+  let grid = @moonpath.Grid::new(5, 4)
+  grid.block_rect(@moonpath.Point::new(1, 1), 3, 2)
+  grid.unblock_rect(@moonpath.Point::new(2, 1), 1, 2)
+  grid.set_cost_rect(@moonpath.Point::new(0, 0), 2, 2, 4)
+  assert_true(grid.terrain_cost(@moonpath.Point::new(1, 1)) == Some(4))
 }
 ```
 

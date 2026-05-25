@@ -28,16 +28,24 @@ pub(all) struct Graph[N] {
 pub fn[N : Hash + Eq] Graph::add_edge(Self[N], N, N, Int) -> Unit
 pub fn[N : Hash + Eq] Graph::add_node(Self[N], N) -> Unit
 pub fn[N : Hash + Eq] Graph::add_undirected_edge(Self[N], N, N, Int) -> Unit
+pub fn[N : Hash + Eq] Graph::all_pairs_distances(Self[N]) -> @hashmap.HashMap[N, @hashmap.HashMap[N, Int]]
 pub fn[N : Hash + Eq] Graph::astar(Self[N], N, N, (N, N) -> Int) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::bfs(Self[N], N, N) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::connected_components(Self[N]) -> Array[Array[N]]
 pub fn[N : Hash + Eq] Graph::contains_edge(Self[N], N, N) -> Bool
 pub fn[N : Hash + Eq] Graph::contains_node(Self[N], N) -> Bool
+pub fn[N : Hash + Eq] Graph::dfs_postorder(Self[N], N) -> Array[N]
+pub fn[N : Hash + Eq] Graph::dfs_preorder(Self[N], N) -> Array[N]
+pub fn[N : Hash + Eq] Graph::diameter(Self[N]) -> Int?
 pub fn[N : Hash + Eq] Graph::dijkstra(Self[N], N, N) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::distances_from(Self[N], N) -> @hashmap.HashMap[N, Int]
+pub fn[N : Hash + Eq] Graph::eccentricity(Self[N], N) -> Int?
 pub fn[N] Graph::edge_count(Self[N]) -> Int
+pub fn[N : Hash + Eq] Graph::has_path(Self[N], N, N) -> Bool
 pub fn[N : Eq] Graph::in_degree(Self[N], N) -> Int
 pub fn[N : Hash + Eq] Graph::is_acyclic(Self[N]) -> Bool
+pub fn[N : Hash + Eq] Graph::is_strongly_connected(Self[N]) -> Bool
+pub fn[N : Hash + Eq] Graph::is_weakly_connected(Self[N]) -> Bool
 pub fn[N : Hash + Eq] Graph::neighbors(Self[N], N) -> Array[Edge[N]]
 pub fn[N : Hash + Eq] Graph::new() -> Self[N]
 pub fn[N] Graph::node_count(Self[N]) -> Int
@@ -61,6 +69,7 @@ pub fn Grid::astar4(Self, Point, Point) -> Path[Point]?
 pub fn Grid::astar8(Self, Point, Point) -> Path[Point]?
 pub fn Grid::astar8_no_corner_cutting(Self, Point, Point) -> Path[Point]?
 pub fn Grid::block(Self, Point) -> Unit
+pub fn Grid::block_rect(Self, Point, Int, Int) -> Unit
 pub fn Grid::contains(Self, Point) -> Bool
 pub fn Grid::from_blocked(Int, Int, Array[Point]) -> Self
 pub fn Grid::is_blocked(Self, Point) -> Bool
@@ -72,10 +81,12 @@ pub fn Grid::new(Int, Int) -> Self
 pub fn Grid::open_points(Self) -> Array[Point]
 pub fn Grid::points(Self) -> Array[Point]
 pub fn Grid::set_cost(Self, Point, Int) -> Unit
+pub fn Grid::set_cost_rect(Self, Point, Int, Int, Int) -> Unit
 pub fn Grid::terrain_cost(Self, Point) -> Int?
 pub fn Grid::to_graph4(Self) -> Graph[Point]
 pub fn Grid::to_graph8(Self) -> Graph[Point]
 pub fn Grid::unblock(Self, Point) -> Unit
+pub fn Grid::unblock_rect(Self, Point, Int, Int) -> Unit
 
 pub(all) struct Path[N] {
   cost : Int

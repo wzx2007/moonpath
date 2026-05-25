@@ -53,6 +53,22 @@ test "distances_from computes all reachable weighted costs" {
 }
 
 ///|
+test "all pairs distances and graph diameter summarize shortest paths" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 2)
+  graph.add_edge("B", "C", 3)
+  graph.add_edge("A", "C", 10)
+  graph.add_node("D")
+  let all = graph.all_pairs_distances()
+  guard all.get("A") is Some(from_a) else { fail("expected distances from A") }
+  assert_eq(from_a.get_or_default("C", -1), 5)
+  assert_true(graph.eccentricity("A") == Some(5))
+  assert_true(graph.eccentricity("D") == Some(0))
+  assert_true(graph.eccentricity("missing") == None)
+  assert_true(graph.diameter() == Some(5))
+}
+
+///|
 test "topological layers group independent work" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("parse", "lint", 1)
@@ -74,6 +90,24 @@ test "topological layers group independent work" {
   cyclic.add_edge("b", "a", 1)
   assert_true(!cyclic.is_acyclic())
   assert_true(cyclic.topological_layers() == None)
+}
+
+///|
+test "dfs traversal and path existence inspect directed reachability" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 1)
+  graph.add_edge("A", "C", 1)
+  graph.add_edge("B", "D", 1)
+  graph.add_edge("C", "E", 1)
+  let preorder = graph.dfs_preorder("A")
+  let postorder = graph.dfs_postorder("A")
+  assert_true(preorder[0] == "A")
+  assert_eq(preorder.length(), 5)
+  assert_eq(postorder.length(), 5)
+  assert_true(contains(preorder, "D"))
+  assert_true(contains(postorder, "A"))
+  assert_true(graph.has_path("A", "E"))
+  assert_true(!graph.has_path("E", "A"))
 }
 
 ///|
@@ -140,6 +174,16 @@ test "weak and strong components differ on directed graphs" {
   }
   assert_eq(pairs, 2)
   assert_eq(singles, 1)
+  assert_true(!graph.is_weakly_connected())
+  assert_true(!graph.is_strongly_connected())
+
+  let connected = @moonpath.Graph::new()
+  connected.add_edge("A", "B", 1)
+  connected.add_edge("B", "A", 1)
+  connected.add_edge("B", "C", 1)
+  connected.add_edge("C", "B", 1)
+  assert_true(connected.is_weakly_connected())
+  assert_true(connected.is_strongly_connected())
 }
 
 ///|
@@ -158,6 +202,19 @@ test "grid supports terrain costs and point helpers" {
     }
   }
   assert_eq(rough_cost, 5)
+}
+
+///|
+test "grid rectangle helpers update blocked cells and terrain costs" {
+  let grid = @moonpath.Grid::new(5, 4)
+  grid.block_rect(@moonpath.Point::new(1, 1), 3, 2)
+  assert_eq(grid.open_points().length(), 14)
+  assert_true(grid.is_blocked(@moonpath.Point::new(2, 2)))
+  grid.unblock_rect(@moonpath.Point::new(2, 1), 1, 2)
+  assert_true(grid.is_open(@moonpath.Point::new(2, 2)))
+  assert_eq(grid.open_points().length(), 16)
+  grid.set_cost_rect(@moonpath.Point::new(0, 0), 2, 2, 4)
+  assert_true(grid.terrain_cost(@moonpath.Point::new(1, 1)) == Some(4))
 }
 
 ///|
