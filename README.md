@@ -8,12 +8,12 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 
 - Directed weighted graph with explicit nodes and edges.
 - BFS for shallow unweighted paths.
-- Dijkstra shortest path for non-negative weighted graphs.
+- Dijkstra shortest path for non-negative weighted graphs, plus distance maps from one source.
 - A* search with custom heuristic functions.
-- Reachability, weak/strong connected components, graph transpose, degree queries, and topological sort.
-- Rectangular grid helpers with blocked cells, terrain costs, 4-neighbor and 8-neighbor pathfinding.
+- Reachability, weak/strong connected components, graph transpose, degree queries, topological sort, acyclicity checks, and topological layers.
+- Rectangular grid helpers with blocked cells, terrain costs, 4-neighbor, 8-neighbor, and no-corner-cutting 8-neighbor pathfinding.
 - Grid-to-graph conversion for users who want to reuse graph algorithms on tile maps.
-- Blackbox tests covering graph search, cycle detection, graph structure, grid routing, terrain costs, and heuristic determinism.
+- Blackbox tests covering graph search, cycle detection, graph structure, DAG layers, grid routing, terrain costs, corner cutting, and heuristic determinism.
 
 ## Install
 
@@ -91,6 +91,20 @@ test "component demo" {
 }
 ```
 
+Distance maps and DAG layers:
+
+```moonbit
+test "analysis demo" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("parse", "compile", 2)
+  graph.add_edge("parse", "lint", 1)
+  graph.add_edge("compile", "package", 3)
+  let distances = graph.distances_from("parse")
+  assert_eq(distances.get_or_default("package", -1), 5)
+  assert_true(graph.topological_layers() is Some(_))
+}
+```
+
 Run the CLI demo:
 
 ```powershell
@@ -119,6 +133,7 @@ moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 - Add bidirectional Dijkstra and A*.
 - Add graph serialization for JSON interchange.
 - Add property tests for randomized graph invariants.
+- Add benchmarks for dense graphs, sparse graphs, and large tile maps.
 - Publish the package after the public repository is pushed.
 
 ## License

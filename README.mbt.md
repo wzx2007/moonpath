@@ -19,6 +19,19 @@ test "shortest path example" {
 
 ```mbt nocheck
 ///|
+test "distance and dag layer example" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("parse", "lint", 1)
+  graph.add_edge("parse", "compile", 2)
+  graph.add_edge("compile", "package", 3)
+  let distances = graph.distances_from("parse")
+  assert_eq(distances.get_or_default("package", -1), 5)
+  assert_true(graph.topological_layers() is Some(_))
+}
+```
+
+```mbt nocheck
+///|
 test "grid terrain example" {
   let grid = @moonpath.Grid::new(3, 3)
   grid.set_cost(@moonpath.Point::new(1, 0), 5)
@@ -27,6 +40,22 @@ test "grid terrain example" {
     fail("expected a path")
   }
   assert_eq(path.cost, 28)
+}
+```
+
+```mbt nocheck
+///|
+test "no corner cutting example" {
+  let grid = @moonpath.Grid::new(2, 2)
+  grid.block(@moonpath.Point::new(1, 0))
+  grid.block(@moonpath.Point::new(0, 1))
+  assert_true(
+    grid.astar8_no_corner_cutting(
+      @moonpath.Point::new(0, 0),
+      @moonpath.Point::new(1, 1),
+    ) ==
+    None,
+  )
 }
 ```
 

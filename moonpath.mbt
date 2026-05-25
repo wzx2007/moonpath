@@ -213,6 +213,50 @@ pub fn[N : Hash + Eq] Graph::astar(
 }
 
 ///|
+pub fn[N : Hash + Eq] Graph::distances_from(
+  self : Graph[N],
+  start : N,
+) -> @hashmap.HashMap[N, Int] {
+  let frontier = PriorityQueue::new()
+  let dist : @hashmap.HashMap[N, Int] = @hashmap.HashMap([])
+  let visited : @hashset.HashSet[N] = @hashset.HashSet([])
+  frontier.push(start, 0)
+  dist.set(start, 0)
+  while frontier.pop_min() is Some(item) {
+    let current = item.node
+    if visited.contains(current) {
+      continue
+    }
+    visited.add(current)
+    let current_cost = dist.get_or_default(current, 0)
+    for edge in self.neighbors(current) {
+      let next_cost = current_cost + edge.cost
+      match dist.get(edge.to) {
+        Some(existing) =>
+          if next_cost < existing {
+            dist.set(edge.to, next_cost)
+            frontier.push(edge.to, next_cost)
+          }
+        None => {
+          dist.set(edge.to, next_cost)
+          frontier.push(edge.to, next_cost)
+        }
+      }
+    }
+  }
+  dist
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::shortest_distance(
+  self : Graph[N],
+  start : N,
+  goal : N,
+) -> Int? {
+  self.distances_from(start).get(goal)
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::reachable(self : Graph[N], start : N) -> Array[N] {
   let visited : @hashset.HashSet[N] = @hashset.HashSet([])
   let queue : Array[N] = []
@@ -324,6 +368,51 @@ pub fn[N : Hash + Eq] Graph::topological_sort(self : Graph[N]) -> Array[N]? {
   } else {
     None
   }
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::topological_layers(
+  self : Graph[N],
+) -> Array[Array[N]]? {
+  let indegree : @hashmap.HashMap[N, Int] = @hashmap.HashMap([])
+  for node in self.nodes() {
+    indegree.set(node, 0)
+  }
+  self.adjacency.each((_node, edges) => {
+    for edge in edges {
+      indegree.update_or_default(edge.to, 1, value => value + 1)
+    }
+  })
+  let mut frontier : Array[N] = []
+  indegree.each((node, degree) => if degree == 0 { frontier.push(node) })
+  let layers : Array[Array[N]] = []
+  let mut processed = 0
+  while frontier.length() > 0 {
+    let layer = frontier
+    let next : Array[N] = []
+    for node in layer {
+      processed += 1
+      for edge in self.neighbors(node) {
+        let next_degree = indegree.get_or_default(edge.to, 0) - 1
+        indegree.set(edge.to, next_degree)
+        if next_degree == 0 {
+          next.push(edge.to)
+        }
+      }
+    }
+    layers.push(layer)
+    frontier = next
+  }
+  if processed == indegree.length() {
+    Some(layers)
+  } else {
+    None
+  }
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::is_acyclic(self : Graph[N]) -> Bool {
+  self.topological_sort() is Some(_)
 }
 
 ///|
@@ -523,6 +612,41 @@ pub fn Grid::neighbors8(self : Grid, point : Point) -> Array[Edge[Point]] {
 }
 
 ///|
+pub fn Grid::neighbors8_no_corner_cutting(
+  self : Grid,
+  point : Point,
+) -> Array[Edge[Point]] {
+  let out : Array[Edge[Point]] = []
+  for
+    delta in [
+      Point::{ x: 1, y: 0 },
+      Point::{ x: -1, y: 0 },
+      Point::{ x: 0, y: 1 },
+      Point::{ x: 0, y: -1 },
+    ] {
+    let next = point.offset(delta.x, delta.y)
+    if self.is_open(next) {
+      out.push(Edge::{ to: next, cost: self.terrain_cost_unchecked(next) * 10 })
+    }
+  }
+  for
+    delta in [
+      Point::{ x: 1, y: 1 },
+      Point::{ x: 1, y: -1 },
+      Point::{ x: -1, y: 1 },
+      Point::{ x: -1, y: -1 },
+    ] {
+    let next = point.offset(delta.x, delta.y)
+    let horizontal = point.offset(delta.x, 0)
+    let vertical = point.offset(0, delta.y)
+    if self.is_open(next) && self.is_open(horizontal) && self.is_open(vertical) {
+      out.push(Edge::{ to: next, cost: self.terrain_cost_unchecked(next) * 14 })
+    }
+  }
+  out
+}
+
+///|
 pub fn Grid::to_graph4(self : Grid) -> Graph[Point] {
   let graph = Graph::new()
   for point in self.open_points() {
@@ -556,6 +680,21 @@ pub fn Grid::astar4(self : Grid, start : Point, goal : Point) -> Path[Point]? {
 pub fn Grid::astar8(self : Grid, start : Point, goal : Point) -> Path[Point]? {
   guard self.is_open(start) && self.is_open(goal) else { return None }
   shortest_path(start, goal, point => self.neighbors8(point), octile)
+}
+
+///|
+pub fn Grid::astar8_no_corner_cutting(
+  self : Grid,
+  start : Point,
+  goal : Point,
+) -> Path[Point]? {
+  guard self.is_open(start) && self.is_open(goal) else { return None }
+  shortest_path(
+    start,
+    goal,
+    point => self.neighbors8_no_corner_cutting(point),
+    octile,
+  )
 }
 
 ///|

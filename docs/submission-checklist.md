@@ -5,7 +5,7 @@
 - MoonBit 主语言实现。
 - 源码结构清晰。
 - README 包含目标、安装、使用、示例。
-- 黑盒测试可运行，当前 10 个测试全部通过。
+- 黑盒测试可运行，当前 13 个测试全部通过。
 - CLI demo 可运行。
 - CI 配置已提供，并在 GitHub Actions 通过。
 - 开发报告已提供。
@@ -28,7 +28,7 @@ moon info
 当前验证输出：
 
 ```text
-Total tests: 10, passed: 10, failed: 0.
+Total tests: 13, passed: 13, failed: 0.
 moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 ```
 
@@ -63,6 +63,8 @@ moonpath demo: cost=14, steps=11, visited=21, open=21, components=1
 - add topology/reachability helpers
 - add connected component analysis
 - add weighted terrain and grid-to-graph conversion
+- add graph distance maps and DAG layers
+- add no-corner-cutting grid pathfinding
 - add tests
 - add CLI demo
 - add README

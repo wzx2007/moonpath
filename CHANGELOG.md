@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0
+
+- Added `Graph::distances_from` and `Graph::shortest_distance` for one-source distance analysis.
+- Added `Graph::topological_layers` and `Graph::is_acyclic` for dependency scheduling use cases.
+- Added `Grid::neighbors8_no_corner_cutting` and `Grid::astar8_no_corner_cutting` for tile maps that disallow diagonal movement through blocked corners.
+- Expanded blackbox tests from 10 to 13 cases.
+- Updated docs and contest materials to reflect the expanded API surface.
+
 ## 0.2.0
 
 - Added graph edge lookup, in/out degree queries, graph transpose, weakly connected components, and strongly connected components.

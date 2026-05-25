@@ -37,6 +37,46 @@ test "topological sort detects cycles" {
 }
 
 ///|
+test "distances_from computes all reachable weighted costs" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 5)
+  graph.add_edge("A", "C", 2)
+  graph.add_edge("C", "B", 1)
+  graph.add_edge("B", "D", 4)
+  graph.add_node("Z")
+  let distances = graph.distances_from("A")
+  assert_eq(distances.get_or_default("A", -1), 0)
+  assert_eq(distances.get_or_default("B", -1), 3)
+  assert_eq(distances.get_or_default("D", -1), 7)
+  assert_true(distances.get("Z") == None)
+  assert_true(graph.shortest_distance("A", "D") == Some(7))
+}
+
+///|
+test "topological layers group independent work" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("parse", "lint", 1)
+  graph.add_edge("parse", "compile", 1)
+  graph.add_edge("lint", "package", 1)
+  graph.add_edge("compile", "package", 1)
+  guard graph.topological_layers() is Some(layers) else {
+    fail("dag should have layers")
+  }
+  assert_true(graph.is_acyclic())
+  assert_eq(layers.length(), 3)
+  assert_true(contains(layers[0], "parse"))
+  assert_true(contains(layers[1], "lint"))
+  assert_true(contains(layers[1], "compile"))
+  assert_true(contains(layers[2], "package"))
+
+  let cyclic = @moonpath.Graph::new()
+  cyclic.add_edge("a", "b", 1)
+  cyclic.add_edge("b", "a", 1)
+  assert_true(!cyclic.is_acyclic())
+  assert_true(cyclic.topological_layers() == None)
+}
+
+///|
 test "grid astar avoids blocked cells" {
   let grid = @moonpath.Grid::from_blocked(5, 4, [
     @moonpath.Point::{ x: 1, y: 0 },
@@ -134,6 +174,18 @@ test "grid astar8 uses consistent octile scale" {
 }
 
 ///|
+test "grid astar8 can prevent corner cutting" {
+  let grid = @moonpath.Grid::new(2, 2)
+  let start = @moonpath.Point::new(0, 0)
+  let goal = @moonpath.Point::new(1, 1)
+  grid.block(@moonpath.Point::new(1, 0))
+  grid.block(@moonpath.Point::new(0, 1))
+  assert_true(grid.astar8(start, goal) is Some(_))
+  assert_true(grid.neighbors8_no_corner_cutting(start).length() == 0)
+  assert_true(grid.astar8_no_corner_cutting(start, goal) == None)
+}
+
+///|
 test "grid converts open cells into graph edges" {
   let grid = @moonpath.Grid::new(2, 2)
   grid.block(@moonpath.Point::new(1, 0))
@@ -141,4 +193,14 @@ test "grid converts open cells into graph edges" {
   assert_eq(graph.node_count(), 3)
   assert_eq(graph.edge_count(), 4)
   assert_true(!graph.contains_node(@moonpath.Point::new(1, 0)))
+}
+
+///|
+fn[N : Eq] contains(items : Array[N], value : N) -> Bool {
+  for item in items {
+    if item == value {
+      return true
+    }
+  }
+  false
 }

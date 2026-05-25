@@ -34,15 +34,19 @@ pub fn[N : Hash + Eq] Graph::connected_components(Self[N]) -> Array[Array[N]]
 pub fn[N : Hash + Eq] Graph::contains_edge(Self[N], N, N) -> Bool
 pub fn[N : Hash + Eq] Graph::contains_node(Self[N], N) -> Bool
 pub fn[N : Hash + Eq] Graph::dijkstra(Self[N], N, N) -> Path[N]?
+pub fn[N : Hash + Eq] Graph::distances_from(Self[N], N) -> @hashmap.HashMap[N, Int]
 pub fn[N] Graph::edge_count(Self[N]) -> Int
 pub fn[N : Eq] Graph::in_degree(Self[N], N) -> Int
+pub fn[N : Hash + Eq] Graph::is_acyclic(Self[N]) -> Bool
 pub fn[N : Hash + Eq] Graph::neighbors(Self[N], N) -> Array[Edge[N]]
 pub fn[N : Hash + Eq] Graph::new() -> Self[N]
 pub fn[N] Graph::node_count(Self[N]) -> Int
 pub fn[N] Graph::nodes(Self[N]) -> Array[N]
 pub fn[N : Hash + Eq] Graph::out_degree(Self[N], N) -> Int
 pub fn[N : Hash + Eq] Graph::reachable(Self[N], N) -> Array[N]
+pub fn[N : Hash + Eq] Graph::shortest_distance(Self[N], N, N) -> Int?
 pub fn[N : Hash + Eq] Graph::strongly_connected_components(Self[N]) -> Array[Array[N]]
+pub fn[N : Hash + Eq] Graph::topological_layers(Self[N]) -> Array[Array[N]]?
 pub fn[N : Hash + Eq] Graph::topological_sort(Self[N]) -> Array[N]?
 pub fn[N : Hash + Eq] Graph::transpose(Self[N]) -> Self[N]
 pub fn[N : Hash + Eq] Graph::weakly_connected_components(Self[N]) -> Array[Array[N]]
@@ -55,6 +59,7 @@ pub(all) struct Grid {
 }
 pub fn Grid::astar4(Self, Point, Point) -> Path[Point]?
 pub fn Grid::astar8(Self, Point, Point) -> Path[Point]?
+pub fn Grid::astar8_no_corner_cutting(Self, Point, Point) -> Path[Point]?
 pub fn Grid::block(Self, Point) -> Unit
 pub fn Grid::contains(Self, Point) -> Bool
 pub fn Grid::from_blocked(Int, Int, Array[Point]) -> Self
@@ -62,6 +67,7 @@ pub fn Grid::is_blocked(Self, Point) -> Bool
 pub fn Grid::is_open(Self, Point) -> Bool
 pub fn Grid::neighbors4(Self, Point) -> Array[Edge[Point]]
 pub fn Grid::neighbors8(Self, Point) -> Array[Edge[Point]]
+pub fn Grid::neighbors8_no_corner_cutting(Self, Point) -> Array[Edge[Point]]
 pub fn Grid::new(Int, Int) -> Self
 pub fn Grid::open_points(Self) -> Array[Point]
 pub fn Grid::points(Self) -> Array[Point]
