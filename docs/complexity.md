@@ -55,6 +55,8 @@ Let `N = width * height`.
 | `Grid::inflated_blocks` | O(B * R^2) | O(N) | Expands `B` blocked cells by radius `R` into a copied grid. |
 | `Grid::reachable_points4` / `Grid::reachable_points8` | O(N) | O(N) | Flood-fills open cells reachable from one start point. |
 | `Grid::open_regions4` / `Grid::open_regions8` | O(N) | O(N) | Finds connected open-cell regions under 4-way or 8-way movement. |
+| `Grid::component_count4` / `Grid::component_count8` | O(N) | O(N) | Counts open-cell connected regions. |
+| `Grid::is_fully_connected4` / `Grid::is_fully_connected8` | O(N) | O(N) | True when zero or one open-cell region exists. |
 | `Grid::neighbors4` / `Grid::neighbors8` | O(1) | O(1) | Checks a fixed number of candidate neighbors. |
 | `Grid::astar4` / `Grid::astar8` | O(N log N) worst case | O(N) | Uses Manhattan or Octile heuristics. |
 | `Grid::dijkstra4` / `Grid::dijkstra8` | O(N log N) | O(N) | Heuristic-free shortest path. |

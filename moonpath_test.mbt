@@ -571,7 +571,16 @@ test "grid reachability and open regions distinguish 4 and 8 neighbors" {
   assert_true(contains(grid.reachable_points8(start), diagonal))
   assert_eq(grid.open_regions4().length(), 2)
   assert_eq(grid.open_regions8().length(), 1)
+  assert_eq(grid.component_count4(), 2)
+  assert_eq(grid.component_count8(), 1)
+  assert_true(!grid.is_fully_connected4())
+  assert_true(grid.is_fully_connected8())
   assert_true(grid.reachable_points4(@moonpath.Point::new(1, 0)).length() == 0)
+
+  let empty = @moonpath.Grid::new(1, 1)
+  empty.block(@moonpath.Point::new(0, 0))
+  assert_eq(empty.component_count4(), 0)
+  assert_true(empty.is_fully_connected4())
 }
 
 ///|

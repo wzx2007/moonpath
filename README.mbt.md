@@ -77,8 +77,10 @@ test "grid region example" {
   grid.block(@moonpath.Point::new(0, 1))
   assert_eq(grid.reachable_points4(@moonpath.Point::new(0, 0)).length(), 1)
   assert_eq(grid.reachable_points8(@moonpath.Point::new(0, 0)).length(), 2)
-  assert_eq(grid.open_regions4().length(), 2)
-  assert_eq(grid.open_regions8().length(), 1)
+  assert_eq(grid.component_count4(), 2)
+  assert_eq(grid.component_count8(), 1)
+  assert_true(!grid.is_fully_connected4())
+  assert_true(grid.is_fully_connected8())
 }
 ```
 

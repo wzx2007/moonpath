@@ -105,6 +105,8 @@ pub fn Grid::block_rect(Self, Point, Int, Int) -> Unit
 pub fn Grid::blocked_points(Self) -> Array[Point]
 pub fn Grid::clear_cost(Self, Point) -> Bool
 pub fn Grid::clear_cost_rect(Self, Point, Int, Int) -> Int
+pub fn Grid::component_count4(Self) -> Int
+pub fn Grid::component_count8(Self) -> Int
 pub fn Grid::contains(Self, Point) -> Bool
 pub fn Grid::dijkstra4(Self, Point, Point) -> Path[Point]?
 pub fn Grid::dijkstra8(Self, Point, Point) -> Path[Point]?
@@ -112,6 +114,8 @@ pub fn Grid::from_blocked(Int, Int, Array[Point]) -> Self
 pub fn Grid::from_parts(Int, Int, Array[Point], Array[CellCost]) -> Self
 pub fn Grid::inflated_blocks(Self, Int) -> Self
 pub fn Grid::is_blocked(Self, Point) -> Bool
+pub fn Grid::is_fully_connected4(Self) -> Bool
+pub fn Grid::is_fully_connected8(Self) -> Bool
 pub fn Grid::is_open(Self, Point) -> Bool
 pub fn Grid::line_of_sight(Self, Point, Point) -> Bool
 pub fn Grid::neighbors4(Self, Point) -> Array[Edge[Point]]

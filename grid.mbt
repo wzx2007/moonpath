@@ -348,6 +348,26 @@ pub fn Grid::open_regions8(self : Grid) -> Array[Array[Point]] {
 }
 
 ///|
+pub fn Grid::component_count4(self : Grid) -> Int {
+  self.open_regions4().length()
+}
+
+///|
+pub fn Grid::component_count8(self : Grid) -> Int {
+  self.open_regions8().length()
+}
+
+///|
+pub fn Grid::is_fully_connected4(self : Grid) -> Bool {
+  self.component_count4() <= 1
+}
+
+///|
+pub fn Grid::is_fully_connected8(self : Grid) -> Bool {
+  self.component_count8() <= 1
+}
+
+///|
 pub fn Grid::neighbors4(self : Grid, point : Point) -> Array[Edge[Point]] {
   let out : Array[Edge[Point]] = []
   for

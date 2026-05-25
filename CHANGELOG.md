@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.28.0
+
+- Added `Grid::component_count4`, `Grid::component_count8`, `Grid::is_fully_connected4`, and `Grid::is_fully_connected8` for quick map connectivity validation.
+- Extended grid region tests and examples for the new connectivity predicates.
+
 ## 0.27.0
 
 - Expanded `cmd/bench` from one grid smoke scenario to deterministic grid, sparse DAG, and dense graph benchmark summaries.

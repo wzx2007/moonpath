@@ -16,7 +16,7 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 - Path result helpers for node and edge counts.
 - A* search with custom heuristic functions.
 - Reachability, ancestors/descendants, path existence, weak/strong connected components, connectivity predicates, graph transpose, degree queries, source/sink/isolated-node queries, graph eccentricity/diameter, topological sort, acyclicity checks, and topological layers.
-- Rectangular grid helpers with blocked cells, obstacle inflation, terrain costs, terrain clearing, rectangular bulk updates, reachable-point/region analysis, 4-neighbor, 8-neighbor, no-corner-cutting 8-neighbor pathfinding, and heuristic-free Dijkstra variants.
+- Rectangular grid helpers with blocked cells, obstacle inflation, terrain costs, terrain clearing, rectangular bulk updates, reachable-point/region analysis, connectivity predicates, 4-neighbor, 8-neighbor, no-corner-cutting 8-neighbor pathfinding, and heuristic-free Dijkstra variants.
 - Grid export/rebuild helpers for blocked cells and terrain overrides.
 - Grid resizing for expanded or cropped map copies.
 - Grid line-of-sight checks and greedy path smoothing for reducing unnecessary waypoints.
@@ -320,8 +320,10 @@ test "grid region demo" {
   grid.block(@moonpath.Point::new(0, 1))
   assert_eq(grid.reachable_points4(@moonpath.Point::new(0, 0)).length(), 1)
   assert_eq(grid.reachable_points8(@moonpath.Point::new(0, 0)).length(), 2)
-  assert_eq(grid.open_regions4().length(), 2)
-  assert_eq(grid.open_regions8().length(), 1)
+  assert_eq(grid.component_count4(), 2)
+  assert_eq(grid.component_count8(), 1)
+  assert_true(!grid.is_fully_connected4())
+  assert_true(grid.is_fully_connected8())
 }
 ```
 
@@ -386,7 +388,7 @@ moonpath bench dense: nodes=36, edges=216, reachable=36, tree=35, diameter=35
 - `graph_search.mbt`: BFS, Dijkstra, bidirectional Dijkstra, A*, path scoring, and distance summaries.
 - `graph_traversal.mbt`: reachability, ancestors/descendants, reachable subgraphs, path existence, BFS tree export, and DFS traversal.
 - `graph_components.mbt`: weak/strong components, connectivity predicates, and DAG helpers.
-- `grid.mbt`: grid construction, terrain updates, terrain clearing, obstacle inflation, reachable regions, rectangular updates, grid neighbors, and grid pathfinding.
+- `grid.mbt`: grid construction, terrain updates, terrain clearing, obstacle inflation, reachable regions, connectivity predicates, rectangular updates, grid neighbors, and grid pathfinding.
 - `moonpath.mbt`: package-level entry point.
 - `moonpath_test.mbt`: blackbox behavior tests.
 - `cmd/main`: runnable example.
