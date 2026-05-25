@@ -22,6 +22,18 @@ test "shortest path example" {
 
 ```mbt nocheck
 ///|
+test "dynamic graph update example" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 1)
+  graph.add_edge("A", "C", 2)
+  assert_eq(graph.remove_edge("A", "B"), 1)
+  assert_true(!graph.contains_edge("A", "B"))
+  assert_true(graph.remove_node("C"))
+}
+```
+
+```mbt nocheck
+///|
 test "safe graph build example" {
   let arcs = [
     @moonpath.Arc::{ from: "A", to: "B", cost: 2 },

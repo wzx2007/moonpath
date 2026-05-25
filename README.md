@@ -7,6 +7,7 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 ## Features
 
 - Directed weighted graph with explicit nodes and edges.
+- Dynamic graph mutation with edge removal, node removal, and edge clearing.
 - Edge-list export and reconstruction with `Arc[N]`, plus node-filtered induced subgraphs.
 - Safe all-or-nothing graph construction from external edge lists with `try_from_arcs`.
 - BFS and DFS traversal helpers for directed graphs.
@@ -150,6 +151,19 @@ test "safe build demo" {
     @moonpath.Arc::{ from: "B", to: "C", cost: 3 },
   ]
   assert_true(@moonpath.Graph::try_from_arcs(arcs) is Some(_))
+}
+```
+
+Dynamic graph updates:
+
+```moonbit
+test "mutation demo" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 1)
+  graph.add_edge("A", "C", 2)
+  assert_eq(graph.remove_edge("A", "B"), 1)
+  assert_true(!graph.contains_edge("A", "B"))
+  assert_true(graph.remove_node("C"))
 }
 ```
 

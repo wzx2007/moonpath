@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.0
+
+- Added `Graph::remove_edge`, `Graph::clear_edges_from`, and `Graph::remove_node` for dynamic graph updates.
+- Expanded blackbox tests from 22 to 23 cases.
+
 ## 0.11.0
 
 - Added `Graph::try_from_arcs` for safe all-or-nothing graph construction from external edge lists.

@@ -44,6 +44,7 @@ pub fn[N] Graph::arcs(Self[N]) -> Array[Arc[N]]
 pub fn[N : Hash + Eq] Graph::astar(Self[N], N, N, (N, N) -> Int) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::bfs(Self[N], N, N) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::bidirectional_dijkstra(Self[N], N, N) -> Path[N]?
+pub fn[N : Hash + Eq] Graph::clear_edges_from(Self[N], N) -> Int
 pub fn[N : Hash + Eq] Graph::connected_components(Self[N]) -> Array[Array[N]]
 pub fn[N : Hash + Eq] Graph::contains_edge(Self[N], N, N) -> Bool
 pub fn[N : Hash + Eq] Graph::contains_node(Self[N], N) -> Bool
@@ -68,6 +69,8 @@ pub fn[N] Graph::nodes(Self[N]) -> Array[N]
 pub fn[N : Hash + Eq] Graph::out_degree(Self[N], N) -> Int
 pub fn[N : Hash + Eq] Graph::path_cost(Self[N], Array[N]) -> Int?
 pub fn[N : Hash + Eq] Graph::reachable(Self[N], N) -> Array[N]
+pub fn[N : Hash + Eq] Graph::remove_edge(Self[N], N, N) -> Int
+pub fn[N : Hash + Eq] Graph::remove_node(Self[N], N) -> Bool
 pub fn[N : Hash + Eq] Graph::shortest_distance(Self[N], N, N) -> Int?
 pub fn[N : Hash + Eq] Graph::strongly_connected_components(Self[N]) -> Array[Array[N]]
 pub fn[N : Hash + Eq] Graph::topological_layers(Self[N]) -> Array[Array[N]]?

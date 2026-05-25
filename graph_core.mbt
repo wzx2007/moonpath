@@ -32,6 +32,52 @@ pub fn[N : Hash + Eq] Graph::add_undirected_edge(
 }
 
 ///|
+pub fn[N : Hash + Eq] Graph::remove_edge(
+  self : Graph[N],
+  from : N,
+  to : N,
+) -> Int {
+  match self.adjacency.get(from) {
+    Some(edges) => {
+      let kept : Array[Edge[N]] = []
+      let mut removed = 0
+      for edge in edges {
+        if edge.to == to {
+          removed += 1
+        } else {
+          kept.push(edge)
+        }
+      }
+      self.adjacency.set(from, kept)
+      removed
+    }
+    None => 0
+  }
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::clear_edges_from(self : Graph[N], node : N) -> Int {
+  match self.adjacency.get(node) {
+    Some(edges) => {
+      let count = edges.length()
+      self.adjacency.set(node, [])
+      count
+    }
+    None => 0
+  }
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::remove_node(self : Graph[N], node : N) -> Bool {
+  guard self.contains_node(node) else { return false }
+  self.adjacency.remove(node)
+  for from in self.nodes() {
+    self.remove_edge(from, node) |> ignore
+  }
+  true
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::neighbors(
   self : Graph[N],
   node : N,

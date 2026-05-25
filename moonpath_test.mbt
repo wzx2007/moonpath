@@ -201,6 +201,24 @@ test "graph degree and transpose expose directed structure" {
 }
 
 ///|
+test "graph mutation removes edges and nodes" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("A", "B", 1)
+  graph.add_edge("A", "B", 2)
+  graph.add_edge("A", "C", 3)
+  graph.add_edge("C", "A", 4)
+  assert_eq(graph.remove_edge("A", "B"), 2)
+  assert_true(!graph.contains_edge("A", "B"))
+  assert_eq(graph.out_degree("A"), 1)
+  assert_eq(graph.clear_edges_from("A"), 1)
+  assert_eq(graph.out_degree("A"), 0)
+  assert_true(graph.remove_node("C"))
+  assert_true(!graph.contains_node("C"))
+  assert_true(!graph.contains_edge("C", "A"))
+  assert_true(!graph.remove_node("missing"))
+}
+
+///|
 test "graph arcs and induced subgraphs support export workflows" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 2)
