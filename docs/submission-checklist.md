@@ -10,6 +10,7 @@
 - CI 配置已提供，并在 GitHub Actions 通过。
 - 开发报告已提供。
 - 最终提交说明已提供。
+- 报名表可粘贴内容已提供。
 - 一页项目申报书 PDF 已提供。
 - 赛题要求摘要已提供。
 - `v0.30.1` 版本标签和 GitHub Release 已创建。
@@ -53,7 +54,7 @@ moonpath bench timing: [...]
 2. GitLink 仓库地址：`https://www.gitlink.org.cn/w1tness/moonpath`。
 3. GitHub Release：`https://github.com/wzx2007/moonpath/releases/tag/v0.30.1`。
 4. 按赛事群/CCF 要求提交报名信息和申报问卷。
-5. 上传桌面 `MoonBit` 文件夹中的 `MoonPath_项目申报书_一页版.pdf`，并附 `docs/final-submission.md` 摘要内容。
+5. 上传桌面 `MoonBit` 文件夹中的 `MoonPath_项目申报书_一页版.pdf`，并按需粘贴 `docs/submission-form-answers.md` 或 `docs/final-submission.md` 摘要内容。
 6. 提交记录已保留真实开发过程，可作为项目持续完善证明。
 
 ## 建议提交历史

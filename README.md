@@ -450,6 +450,7 @@ moonpath bench timing: [...]
 - `docs/release-checklist.md`: release and repository metadata checklist.
 - `docs/submission-checklist.md`: GitHub/GitLink submission checklist.
 - `docs/final-submission.md`: final contest submission summary.
+- `docs/submission-form-answers.md`: copy-ready contest form answers.
 - `docs/competition-requirements.md`: extracted requirements from the contest page.
 
 ## Release Status
