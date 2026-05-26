@@ -12,6 +12,13 @@ priv struct PriorityQueue[N] {
 }
 
 ///|
+priv struct DagPathFrame[N] {
+  node : N
+  nodes : Array[N]
+  cost : Int
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::bfs(
   self : Graph[N],
   start : N,
@@ -252,6 +259,41 @@ pub fn[N : Hash + Eq] Graph::dag_longest_path(
       })
     None => None
   }
+}
+
+///|
+pub fn[N : Hash + Eq] Graph::dag_paths(
+  self : Graph[N],
+  start : N,
+  goal : N,
+) -> Array[Path[N]] {
+  guard self.contains_node(start) && self.contains_node(goal) else { return [] }
+  guard self.is_acyclic() else { return [] }
+  let out : Array[Path[N]] = []
+  let stack : Array[DagPathFrame[N]] = [
+    DagPathFrame::{ node: start, nodes: [start], cost: 0 },
+  ]
+  while stack.length() > 0 {
+    let frame = stack.unsafe_pop()
+    if frame.node == goal {
+      out.push(Path::{
+        cost: frame.cost,
+        nodes: frame.nodes,
+        visited: frame.nodes.length(),
+      })
+      continue
+    }
+    for edge in self.neighbors(frame.node).rev() {
+      let next_nodes = frame.nodes.copy()
+      next_nodes.push(edge.to)
+      stack.push(DagPathFrame::{
+        node: edge.to,
+        nodes: next_nodes,
+        cost: frame.cost + edge.cost,
+      })
+    }
+  }
+  out
 }
 
 ///|

@@ -25,6 +25,7 @@ This document summarizes expected complexity and practical use cases for the cur
 | `Graph::shortest_path_tree` | O((V + E) log V) | O(V) | Exports Dijkstra parent edges for reachable nodes. |
 | `Graph::all_pairs_distances` | O(V * (V + E) log V) | O(V^2) worst case | Runs Dijkstra from every node. |
 | `Graph::dag_longest_path` | O(V + E) | O(V) | Returns `None` if the graph has a cycle or the goal is unreachable. |
+| `Graph::dag_paths` | O(V + E + P * L) | O(P * L) | Enumerates `P` acyclic paths of average length `L`; returns an empty array on cycles. |
 
 ## Graph Analysis
 

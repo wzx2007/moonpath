@@ -156,6 +156,28 @@ test "dag_longest_path returns weighted critical path" {
 }
 
 ///|
+test "dag_paths enumerates acyclic workflow alternatives" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("start", "lint", 1)
+  graph.add_edge("start", "compile", 2)
+  graph.add_edge("lint", "package", 3)
+  graph.add_edge("compile", "package", 4)
+  graph.add_edge("package", "deploy", 5)
+  let paths = graph.dag_paths("start", "deploy")
+  assert_eq(paths.length(), 2)
+  assert_true(contains_path(paths, ["start", "lint", "package", "deploy"], 9))
+  assert_true(
+    contains_path(paths, ["start", "compile", "package", "deploy"], 11),
+  )
+  assert_true(graph.dag_paths("missing", "deploy").length() == 0)
+
+  let cyclic = @moonpath.Graph::new()
+  cyclic.add_edge("A", "B", 1)
+  cyclic.add_edge("B", "A", 1)
+  assert_true(cyclic.dag_paths("A", "B").length() == 0)
+}
+
+///|
 test "dfs traversal and path existence inspect directed reachability" {
   let graph = @moonpath.Graph::new()
   graph.add_edge("A", "B", 1)
@@ -674,6 +696,20 @@ fn[N : Eq] contains_arc(
 ) -> Bool {
   for arc in arcs {
     if arc.from == from && arc.to == to && arc.cost == cost {
+      return true
+    }
+  }
+  false
+}
+
+///|
+fn[N : Eq] contains_path(
+  paths : Array[@moonpath.Path[N]],
+  nodes : Array[N],
+  cost : Int,
+) -> Bool {
+  for path in paths {
+    if path.cost == cost && path.nodes == nodes {
       return true
     }
   }

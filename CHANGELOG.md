@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.29.0
+
+- Added `Graph::dag_paths` to enumerate all directed paths between two nodes in an acyclic graph.
+- Expanded blackbox tests from 34 to 35 cases.
+
 ## 0.28.0
 
 - Added `Grid::component_count4`, `Grid::component_count8`, `Grid::is_fully_connected4`, and `Grid::is_fully_connected8` for quick map connectivity validation.

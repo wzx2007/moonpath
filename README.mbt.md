@@ -244,6 +244,18 @@ test "dag longest path example" {
 
 ```mbt nocheck
 ///|
+test "dag path enumeration example" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("start", "lint", 1)
+  graph.add_edge("start", "compile", 2)
+  graph.add_edge("lint", "package", 3)
+  graph.add_edge("compile", "package", 4)
+  assert_eq(graph.dag_paths("start", "package").length(), 2)
+}
+```
+
+```mbt nocheck
+///|
 test "bulk grid example" {
   let grid = @moonpath.Grid::new(5, 4)
   grid.block_rect(@moonpath.Point::new(1, 1), 3, 2)
