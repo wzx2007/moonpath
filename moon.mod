@@ -11,7 +11,7 @@
 
 name = "moonbit-contest/moonpath"
 
-version = "0.1.0"
+version = "0.30.0"
 
 readme = "README.mbt.md"
 
@@ -19,6 +19,15 @@ repository = "https://github.com/wzx2007/moonpath"
 
 license = "Apache-2.0"
 
-keywords = [ "graph", "pathfinding", "astar", "dijkstra", "moonbit" ]
+keywords = [
+  "graph",
+  "pathfinding",
+  "astar",
+  "dijkstra",
+  "bellman-ford",
+  "grid",
+  "benchmark",
+  "moonbit",
+]
 
 description = "A MoonBit graph algorithms and tile-grid pathfinding library for reusable open-source ecosystem building."
