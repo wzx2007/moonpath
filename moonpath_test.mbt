@@ -678,6 +678,157 @@ test "grid export rebuild and inflation invariants stay consistent" {
 }
 
 ///|
+test "graph serializes through JSON and text formats" {
+  let graph = @moonpath.Graph::new()
+  graph.add_node("isolated")
+  graph.add_edge("A", "B", 2)
+  graph.add_edge("B", "C", 3)
+  graph.add_edge("A", "C", 9)
+  let json = graph.to_json_string()
+  guard @moonpath.Graph::from_json_string(json) is Some(from_json) else {
+    fail("expected graph JSON round trip")
+  }
+  assert_eq(from_json.node_count(), graph.node_count())
+  assert_eq(from_json.edge_count(), graph.edge_count())
+  assert_true(from_json.contains_node("isolated"))
+  assert_true(from_json.path_cost(["A", "B", "C"]) == Some(5))
+
+  let text = graph.to_text()
+  guard @moonpath.Graph::from_text(text) is Some(from_text) else {
+    fail("expected graph text round trip")
+  }
+  assert_eq(from_text.node_count(), graph.node_count())
+  assert_eq(from_text.edge_count(), graph.edge_count())
+  assert_true(from_text.path_cost(["A", "B", "C"]) == Some(5))
+  assert_true(@moonpath.Graph::from_text("arc\t\"A\"\t\"B\"\t-1\n") is None)
+}
+
+///|
+test "grid serializes through JSON and text formats" {
+  let grid = @moonpath.Grid::new(4, 3)
+  grid.block(@moonpath.Point::new(1, 0))
+  grid.block(@moonpath.Point::new(2, 2))
+  grid.set_cost(@moonpath.Point::new(3, 1), 6)
+  let json = grid.to_json_string()
+  guard @moonpath.Grid::from_json_string(json) is Some(from_json) else {
+    fail("expected grid JSON round trip")
+  }
+  assert_eq(from_json.blocked_points().length(), 2)
+  assert_true(from_json.is_blocked(@moonpath.Point::new(1, 0)))
+  assert_true(from_json.terrain_cost(@moonpath.Point::new(3, 1)) == Some(6))
+
+  let text = grid.to_text()
+  guard @moonpath.Grid::from_text(text) is Some(from_text) else {
+    fail("expected grid text round trip")
+  }
+  assert_eq(from_text.points().length(), grid.points().length())
+  assert_true(from_text.is_blocked(@moonpath.Point::new(2, 2)))
+  assert_true(from_text.terrain_cost(@moonpath.Point::new(3, 1)) == Some(6))
+  assert_true(@moonpath.Grid::from_text("blocked\t0\t0\n") is None)
+  assert_true(@moonpath.Grid::from_text("grid\t-1\t2\n") is None)
+  assert_true(
+    @moonpath.Grid::from_text("grid\t2\t2\nterrain\t1\t1\t0\n") is None,
+  )
+}
+
+///|
+test "bidirectional A* matches shortest path on graphs and grids" {
+  let graph = @moonpath.Graph::new()
+  graph.add_edge("S", "A", 2)
+  graph.add_edge("A", "T", 2)
+  graph.add_edge("S", "B", 5)
+  graph.add_edge("B", "T", 1)
+  guard graph.bidirectional_astar("S", "T", (_a, _b) => 0) is Some(path) else {
+    fail("expected bidirectional A* graph path")
+  }
+  assert_eq(path.cost, 4)
+  guard graph.dijkstra("S", "T") is Some(expected) else {
+    fail("expected dijkstra graph path")
+  }
+  assert_eq(path.cost, expected.cost)
+
+  let grid = @moonpath.Grid::new(5, 4)
+  grid.block_rect(@moonpath.Point::new(2, 0), 1, 3)
+  let start = @moonpath.Point::new(0, 0)
+  let goal = @moonpath.Point::new(4, 0)
+  guard grid.bidirectional_astar4(start, goal) is Some(grid_path) else {
+    fail("expected bidirectional A* grid path")
+  }
+  assert_true(grid.path_valid4(grid_path.nodes))
+  assert_true(grid.path_cost4(grid_path.nodes) == Some(grid_path.cost))
+}
+
+///|
+test "bellman-ford supports negative edges and rejects reachable negative cycles" {
+  let nodes = ["S", "A", "B", "T"]
+  let arcs = [
+    @moonpath.Arc::{ from: "S", to: "A", cost: 4 },
+    @moonpath.Arc::{ from: "A", to: "B", cost: -6 },
+    @moonpath.Arc::{ from: "B", to: "T", cost: 3 },
+    @moonpath.Arc::{ from: "S", to: "T", cost: 10 },
+  ]
+  guard @moonpath.bellman_ford_path(nodes, arcs, "S", "T") is Some(path) else {
+    fail("expected negative-edge path")
+  }
+  assert_eq(path.cost, 1)
+  assert_true(path.nodes == ["S", "A", "B", "T"])
+  guard @moonpath.bellman_ford_distances(nodes, arcs, "S") is Some(dist) else {
+    fail("expected negative-edge distances")
+  }
+  assert_eq(dist.get_or_default("T", 999), 1)
+
+  let bad = [
+    @moonpath.Arc::{ from: "S", to: "A", cost: 1 },
+    @moonpath.Arc::{ from: "A", to: "B", cost: -3 },
+    @moonpath.Arc::{ from: "B", to: "A", cost: 1 },
+    @moonpath.Arc::{ from: "B", to: "T", cost: 1 },
+  ]
+  assert_true(@moonpath.bellman_ford_path(nodes, bad, "S", "T") is None)
+  assert_true(@moonpath.bellman_ford_distances(nodes, bad, "S") is None)
+}
+
+///|
+test "generated graph and grid property checks cover core invariants" {
+  let mut size = 5
+  while size <= 14 {
+    let graph = make_generated_dag(size, size * 11)
+    let twice = graph.transpose().transpose()
+    assert_eq(twice.node_count(), graph.node_count())
+    assert_eq(twice.edge_count(), graph.edge_count())
+    for arc in graph.arcs() {
+      assert_true(twice.contains_edge(arc.from, arc.to))
+    }
+    let tree = graph.shortest_path_tree(0)
+    let reachable = graph.distances_from(0).length()
+    assert_true(tree.length() <= reachable - 1)
+    guard graph.dag_longest_path(0, size - 1) is Some(path) else {
+      fail("expected generated DAG path")
+    }
+    assert_true(path.nodes[0] == 0)
+    assert_true(path.nodes[path.nodes.length() - 1] == size - 1)
+    assert_true(graph.path_cost(path.nodes) == Some(path.cost))
+    size += 3
+  }
+
+  let mut seed = 0
+  while seed < 6 {
+    let grid = make_generated_grid(6 + seed, 5 + seed, seed)
+    let graph4 = grid.to_graph4()
+    assert_eq(graph4.node_count(), grid.open_points().length())
+    let twice = graph4.transpose().transpose()
+    assert_eq(twice.node_count(), graph4.node_count())
+    assert_eq(twice.edge_count(), graph4.edge_count())
+    let start = @moonpath.Point::new(0, 0)
+    if grid.is_open(start) {
+      let reachable = graph4.distances_from(start).length()
+      let tree = graph4.shortest_path_tree(start)
+      assert_true(tree.length() <= reachable - 1)
+    }
+    seed += 1
+  }
+}
+
+///|
 fn[N : Eq] contains(items : Array[N], value : N) -> Bool {
   for item in items {
     if item == value {
@@ -685,6 +836,51 @@ fn[N : Eq] contains(items : Array[N], value : N) -> Bool {
     }
   }
   false
+}
+
+///|
+fn make_generated_dag(size : Int, salt : Int) -> @moonpath.Graph[Int] {
+  let graph = @moonpath.Graph::new()
+  let mut node = 0
+  while node < size {
+    graph.add_node(node)
+    node += 1
+  }
+  let mut from = 0
+  while from + 1 < size {
+    graph.add_edge(from, from + 1, 1)
+    let mut to = from + 2
+    while to < size {
+      if (from * 31 + to * 17 + salt) % 4 == 0 {
+        graph.add_edge(from, to, to - from + 1)
+      }
+      to += 1
+    }
+    from += 1
+  }
+  graph
+}
+
+///|
+fn make_generated_grid(width : Int, height : Int, salt : Int) -> @moonpath.Grid {
+  let grid = @moonpath.Grid::new(width, height)
+  let mut y = 0
+  while y < height {
+    let mut x = 0
+    while x < width {
+      let point = @moonpath.Point::new(x, y)
+      if !(x == 0 && y == 0) &&
+        !(x == width - 1 && y == height - 1) &&
+        (x * 19 + y * 23 + salt) % 7 == 0 {
+        grid.block(point)
+      } else if (x * 13 + y * 11 + salt) % 5 == 0 {
+        grid.set_cost(point, 2 + (x + y + salt) % 4)
+      }
+      x += 1
+    }
+    y += 1
+  }
+  grid
 }
 
 ///|

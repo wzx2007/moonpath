@@ -21,9 +21,11 @@ This document summarizes expected complexity and practical use cases for the cur
 | `Graph::dijkstra` | O((V + E) log V) | O(V) | Uses a binary heap priority queue. |
 | `Graph::bidirectional_dijkstra` | O((V + E) log V) worst case | O(V) | Often reduces explored nodes when a path exists between distant endpoints. |
 | `Graph::astar` | O((V + E) log V) worst case | O(V) | Faster when the heuristic is admissible and informative. |
+| `Graph::bidirectional_astar` | O((V + E) log V) worst case | O(V) | Combines two-frontier search with endpoint heuristics. |
 | `Graph::distances_from` | O((V + E) log V) | O(V) | Computes distances from one source to all reachable nodes. |
 | `Graph::shortest_path_tree` | O((V + E) log V) | O(V) | Exports Dijkstra parent edges for reachable nodes. |
 | `Graph::all_pairs_distances` | O(V * (V + E) log V) | O(V^2) worst case | Runs Dijkstra from every node. |
+| `bellman_ford_path` / `bellman_ford_distances` | O(V * E) | O(V) | Supports negative arcs and returns `None` on reachable negative cycles. |
 | `Graph::dag_longest_path` | O(V + E) | O(V) | Returns `None` if the graph has a cycle or the goal is unreachable. |
 | `Graph::dag_paths` | O(V + E + P * L) | O(P * L) | Enumerates `P` acyclic paths of average length `L`; returns an empty array on cycles. |
 
@@ -60,6 +62,7 @@ Let `N = width * height`.
 | `Grid::is_fully_connected4` / `Grid::is_fully_connected8` | O(N) | O(N) | True when zero or one open-cell region exists. |
 | `Grid::neighbors4` / `Grid::neighbors8` | O(1) | O(1) | Checks a fixed number of candidate neighbors. |
 | `Grid::astar4` / `Grid::astar8` | O(N log N) worst case | O(N) | Uses Manhattan or Octile heuristics. |
+| `Grid::bidirectional_astar4` / `Grid::bidirectional_astar8` | O(N log N) worst case | O(N) | Converts to a graph, then runs bidirectional A*. |
 | `Grid::dijkstra4` / `Grid::dijkstra8` | O(N log N) | O(N) | Heuristic-free shortest path. |
 | `Grid::to_graph4` / `Grid::to_graph8` | O(N) | O(N) | Converts open cells to graph nodes and adjacency edges. |
 | `Grid::line_of_sight` | O(max(dx, dy)) | O(1) | Integer ray traversal. |
@@ -70,10 +73,13 @@ Let `N = width * height`.
 - Use `bfs` when every edge has the same practical cost.
 - Use `dijkstra` when weights matter and there is no useful heuristic.
 - Use `bidirectional_dijkstra` for point-to-point weighted graph queries where both endpoints are known.
+- Use `bidirectional_astar` when the graph has a reliable endpoint heuristic and the route is point-to-point.
+- Use `bellman_ford_path` or `bellman_ford_distances` when external edge lists may contain negative costs.
 - Use `dag_longest_path` for critical-path analysis on acyclic dependency graphs.
 - Use `astar4` or `astar8` for grid maps with a clear geometric heuristic.
 - Use `dijkstra4` or `dijkstra8` when terrain costs dominate and heuristic guidance is not useful.
 - Use `try_from_arcs` for external or user-provided graph data.
+- Use `Graph::from_json_string`, `Graph::from_text`, `Grid::from_json_string`, or `Grid::from_text` for interchange with tools and fixtures.
 - Use `inflated_blocks` before grid search when the moving agent needs clearance around blocked cells.
 - Use `open_regions4` or `open_regions8` to validate that map areas are connected before running repeated path queries.
 - Use `line_of_sight` and `smooth_path` after grid search when consumers prefer fewer waypoints.

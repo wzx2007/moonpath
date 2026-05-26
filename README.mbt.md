@@ -288,6 +288,34 @@ test "grid terrain example" {
 
 ```mbt nocheck
 ///|
+test "serialization example" {
+  let graph = @moonpath.Graph::new()
+  graph.add_node("isolated")
+  graph.add_edge("A", "B", 2)
+  assert_true(
+    @moonpath.Graph::from_json_string(graph.to_json_string()) is Some(_),
+  )
+  assert_true(@moonpath.Graph::from_text(graph.to_text()) is Some(_))
+}
+```
+
+```mbt nocheck
+///|
+test "bellman ford example" {
+  let arcs = [
+    @moonpath.Arc::{ from: "S", to: "A", cost: 4 },
+    @moonpath.Arc::{ from: "A", to: "T", cost: -2 },
+  ]
+  guard @moonpath.bellman_ford_path(["S", "A", "T"], arcs, "S", "T")
+    is Some(path) else {
+    fail("expected a path")
+  }
+  assert_eq(path.cost, 2)
+}
+```
+
+```mbt nocheck
+///|
 test "no corner cutting example" {
   let grid = @moonpath.Grid::new(2, 2)
   grid.block(@moonpath.Point::new(1, 0))

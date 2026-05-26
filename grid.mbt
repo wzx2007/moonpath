@@ -491,6 +491,16 @@ pub fn Grid::dijkstra4(
 }
 
 ///|
+pub fn Grid::bidirectional_astar4(
+  self : Grid,
+  start : Point,
+  goal : Point,
+) -> Path[Point]? {
+  guard self.is_open(start) && self.is_open(goal) else { return None }
+  self.to_graph4().bidirectional_astar(start, goal, manhattan)
+}
+
+///|
 pub fn Grid::astar8(self : Grid, start : Point, goal : Point) -> Path[Point]? {
   guard self.is_open(start) && self.is_open(goal) else { return None }
   shortest_path(start, goal, point => self.neighbors8(point), octile)
@@ -504,6 +514,16 @@ pub fn Grid::dijkstra8(
 ) -> Path[Point]? {
   guard self.is_open(start) && self.is_open(goal) else { return None }
   shortest_path(start, goal, point => self.neighbors8(point), (_a, _b) => 0)
+}
+
+///|
+pub fn Grid::bidirectional_astar8(
+  self : Grid,
+  start : Point,
+  goal : Point,
+) -> Path[Point]? {
+  guard self.is_open(start) && self.is_open(goal) else { return None }
+  self.to_graph8().bidirectional_astar(start, goal, octile)
 }
 
 ///|

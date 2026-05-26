@@ -3,10 +3,11 @@ fn main {
   run_grid_bench()
   run_sparse_dag_bench()
   run_dense_graph_bench()
+  run_timing_bench()
 }
 
 ///|
-fn run_grid_bench() -> Unit {
+fn make_grid_fixture() -> @moonpath.Grid {
   let grid = @moonpath.Grid::new(30, 20)
   let mut y = 0
   while y < 20 {
@@ -19,7 +20,12 @@ fn run_grid_bench() -> Unit {
   grid.unblock(@moonpath.Point::new(20, 8))
   grid.unblock(@moonpath.Point::new(20, 14))
   grid.set_cost_rect(@moonpath.Point::new(14, 5), 4, 6, 3)
+  grid
+}
 
+///|
+fn run_grid_bench() -> Unit {
+  let grid = make_grid_fixture()
   let start = @moonpath.Point::new(0, 0)
   let goal = @moonpath.Point::new(29, 19)
   let graph = grid.to_graph4()
@@ -37,7 +43,7 @@ fn run_grid_bench() -> Unit {
 }
 
 ///|
-fn run_sparse_dag_bench() -> Unit {
+fn make_sparse_dag_fixture() -> @moonpath.Graph[Int] {
   let graph = @moonpath.Graph::new()
   let mut node = 0
   while node < 80 {
@@ -55,6 +61,12 @@ fn run_sparse_dag_bench() -> Unit {
     }
     from += 1
   }
+  graph
+}
+
+///|
+fn run_sparse_dag_bench() -> Unit {
+  let graph = make_sparse_dag_fixture()
   let layers = match graph.topological_layers() {
     Some(value) => value.length()
     None => 0
@@ -72,7 +84,7 @@ fn run_sparse_dag_bench() -> Unit {
 }
 
 ///|
-fn run_dense_graph_bench() -> Unit {
+fn make_dense_graph_fixture() -> @moonpath.Graph[Int] {
   let graph = @moonpath.Graph::new()
   let mut node = 0
   while node < 36 {
@@ -88,9 +100,51 @@ fn run_dense_graph_bench() -> Unit {
     }
     from += 1
   }
+  graph
+}
+
+///|
+fn run_dense_graph_bench() -> Unit {
+  let graph = make_dense_graph_fixture()
   let distances = graph.distances_from(0)
   let tree = graph.shortest_path_tree(0)
   println(
     "moonpath bench dense: nodes=\{graph.node_count()}, edges=\{graph.edge_count()}, reachable=\{distances.length()}, tree=\{tree.length()}, diameter=\{graph.diameter().unwrap()}",
   )
+}
+
+///|
+fn run_timing_bench() -> Unit {
+  let bencher = @corebench.new()
+  let grid = make_grid_fixture()
+  let sparse = make_sparse_dag_fixture()
+  let dense = make_dense_graph_fixture()
+  let start = @moonpath.Point::new(0, 0)
+  let goal = @moonpath.Point::new(29, 19)
+  bencher.bench(
+    name="grid_dijkstra4_30x20",
+    fn() {
+      match grid.dijkstra4(start, goal) {
+        Some(path) => bencher.keep(path.cost)
+        None => abort("expected grid path")
+      }
+    },
+    count=3,
+  )
+  bencher.bench(
+    name="sparse_dag_longest_80",
+    fn() {
+      match sparse.dag_longest_path(0, 79) {
+        Some(path) => bencher.keep(path.cost)
+        None => abort("expected DAG path")
+      }
+    },
+    count=3,
+  )
+  bencher.bench(
+    name="dense_distances_36",
+    fn() { bencher.keep(dense.distances_from(0).length()) },
+    count=3,
+  )
+  println("moonpath bench timing: \{bencher.dump_summaries()}")
 }

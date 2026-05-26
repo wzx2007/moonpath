@@ -3,7 +3,7 @@
 pub(all) struct Edge[N] {
   to : N
   cost : Int
-} derive(Eq, Debug)
+} derive(Eq, Debug, ToJson, FromJson)
 
 ///|
 /// A full directed edge record with source, target, and cost.
@@ -11,7 +11,7 @@ pub(all) struct Arc[N] {
   from : N
   to : N
   cost : Int
-} derive(Eq, Debug)
+} derive(Eq, Debug, ToJson, FromJson)
 
 ///|
 /// A successful shortest-path query.
@@ -19,7 +19,7 @@ pub(all) struct Path[N] {
   cost : Int
   nodes : Array[N]
   visited : Int
-} derive(Eq, Debug)
+} derive(Eq, Debug, ToJson, FromJson)
 
 ///|
 /// A mutable directed weighted graph backed by hash maps.
@@ -32,14 +32,14 @@ pub(all) struct Graph[N] {
 pub(all) struct Point {
   x : Int
   y : Int
-} derive(Eq, Hash, Debug)
+} derive(Eq, Hash, Debug, ToJson, FromJson)
 
 ///|
 /// A terrain override for one grid cell.
 pub(all) struct CellCost {
   point : Point
   cost : Int
-} derive(Eq, Debug)
+} derive(Eq, Debug, ToJson, FromJson)
 
 ///|
 /// A rectangular grid with blocked cells.

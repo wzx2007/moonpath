@@ -11,8 +11,10 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 - Weighted graph summaries for total, minimum, and maximum edge cost.
 - Edge-list export and reconstruction with `Arc[N]`, plus node-filtered induced subgraphs and reachable subgraphs.
 - Safe all-or-nothing graph construction from external edge lists with `try_from_arcs`.
+- JSON and line-oriented text import/export for `Graph[String]` and `Grid`.
 - BFS, BFS-tree, and DFS traversal helpers for directed graphs.
-- Dijkstra and bidirectional Dijkstra shortest paths for non-negative weighted graphs, shortest-path tree export, DAG path enumeration, DAG longest paths for critical-path analysis, plus explicit path scoring, one-source distance maps, and all-pairs distance maps.
+- Dijkstra, bidirectional Dijkstra, A*, and bidirectional A* shortest paths for non-negative weighted graphs, shortest-path tree export, DAG path enumeration, DAG longest paths for critical-path analysis, plus explicit path scoring, one-source distance maps, and all-pairs distance maps.
+- Bellman-Ford helpers for negative-edge path and distance queries over raw `Arc[N]` inputs.
 - Path result helpers for node and edge counts.
 - A* search with custom heuristic functions.
 - Reachability, ancestors/descendants, path existence, weak/strong connected components, connectivity predicates, graph transpose, degree queries, source/sink/isolated-node queries, graph eccentricity/diameter, topological sort, acyclicity checks, and topological layers.
@@ -22,7 +24,8 @@ This repository is prepared for the `MoonBit 开源生态项目贡献赛` track.
 - Grid line-of-sight checks and greedy path smoothing for reducing unnecessary waypoints.
 - Grid path validation and path cost recomputation for 4-neighbor and 8-neighbor paths.
 - Grid-to-graph conversion for users who want to reuse graph algorithms on tile maps.
-- Blackbox tests covering graph search, cycle detection, graph structure, DAG layers, DFS, all-pairs distances, connectivity, grid routing, terrain costs, corner cutting, and heuristic determinism.
+- Formal benchmark command with deterministic workload summaries and `moonbitlang/core/bench` timing JSON.
+- Blackbox tests covering graph search, cycle detection, graph structure, DAG layers, DFS, all-pairs distances, connectivity, grid routing, terrain costs, corner cutting, serialization, Bellman-Ford, bidirectional A*, generated graph/grid properties, and heuristic determinism.
 
 ## Install
 
@@ -238,6 +241,36 @@ test "safe build demo" {
 }
 ```
 
+Serialization:
+
+```moonbit
+test "serialization demo" {
+  let graph = @moonpath.Graph::new()
+  graph.add_node("isolated")
+  graph.add_edge("A", "B", 2)
+  let json = graph.to_json_string()
+  assert_true(@moonpath.Graph::from_json_string(json) is Some(_))
+  let text = graph.to_text()
+  assert_true(@moonpath.Graph::from_text(text) is Some(_))
+}
+```
+
+Bellman-Ford for negative edges:
+
+```moonbit
+test "bellman ford demo" {
+  let arcs = [
+    @moonpath.Arc::{ from: "S", to: "A", cost: 4 },
+    @moonpath.Arc::{ from: "A", to: "T", cost: -2 },
+  ]
+  guard @moonpath.bellman_ford_path(["S", "A", "T"], arcs, "S", "T")
+    is Some(path) else {
+    fail("expected a path")
+  }
+  assert_eq(path.cost, 2)
+}
+```
+
 Dynamic graph updates:
 
 ```moonbit
@@ -392,16 +425,18 @@ Expected output:
 moonpath bench grid: nodes=571, edges=2122, open=571, components=1, cost=48, steps=48, visited=567
 moonpath bench sparse-dag: nodes=80, edges=226, layers=80, critical=79, steps=79
 moonpath bench dense: nodes=36, edges=216, reachable=36, tree=35, diameter=35
+moonpath bench timing: [...]
 ```
 
 ## Repository Layout
 
 - `types.mbt`: public data types.
 - `graph_core.mbt`: graph construction, edge queries, degree/source/sink queries, and transpose.
-- `graph_search.mbt`: BFS, Dijkstra, bidirectional Dijkstra, A*, path scoring, and distance summaries.
+- `graph_search.mbt`: BFS, Dijkstra, bidirectional Dijkstra, A*, bidirectional A*, Bellman-Ford, path scoring, and distance summaries.
 - `graph_traversal.mbt`: reachability, ancestors/descendants, reachable subgraphs, path existence, BFS tree export, and DFS traversal.
 - `graph_components.mbt`: weak/strong components, connectivity predicates, and DAG helpers.
 - `grid.mbt`: grid construction, terrain updates, terrain clearing, obstacle inflation, reachable regions, connectivity predicates, rectangular updates, grid neighbors, and grid pathfinding.
+- `serialization.mbt`: JSON and text import/export for string graphs and grids.
 - `moonpath.mbt`: package-level entry point.
 - `moonpath_test.mbt`: blackbox behavior tests.
 - `cmd/main`: runnable example.
@@ -410,16 +445,15 @@ moonpath bench dense: nodes=36, edges=216, reachable=36, tree=35, diameter=35
 - `docs/project-proposal.md`: one-page contest proposal draft.
 - `docs/development-report.md`: completion report draft.
 - `docs/complexity.md`: complexity guide and API selection notes.
+- `docs/api.md`: public API index.
+- `docs/error-semantics.md`: abort, `None`, and empty collection behavior.
+- `docs/release-checklist.md`: release and repository metadata checklist.
 - `docs/submission-checklist.md`: GitHub/GitLink submission checklist.
 - `docs/competition-requirements.md`: extracted requirements from the contest page.
 
-## Roadmap
+## Release Status
 
-- Add bidirectional A*.
-- Add graph serialization for JSON interchange.
-- Expand deterministic invariant tests into randomized graph and grid property suites.
-- Add wall-clock timing output for the deterministic benchmark scenarios.
-- Publish the package after the public repository is pushed.
+The contest MVP roadmap items are implemented: serialization, generated property checks, bidirectional A*, negative-edge Bellman-Ford helpers, and timed benchmark summaries are all present. Remaining release work is repository housekeeping: final GitHub/GitLink metadata checks, CI confirmation, and public package publication when MoonBit package distribution is desired.
 
 ## License
 

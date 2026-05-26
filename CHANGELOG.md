@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.30.0
+
+- Added JSON and line-oriented text import/export helpers for `Graph[String]` and `Grid`.
+- Added JSON encode/decode support for `Edge`, `Arc`, `Path`, `Point`, and `CellCost`.
+- Added `Graph::bidirectional_astar`, `Grid::bidirectional_astar4`, and `Grid::bidirectional_astar8`.
+- Added `bellman_ford_path` and `bellman_ford_distances` for negative-edge workflows with negative-cycle detection.
+- Upgraded `cmd/bench` with `moonbitlang/core/bench` timing summaries for grid, sparse DAG, and dense graph workloads.
+- Expanded blackbox tests from 35 to 40 cases, including generated graph/grid property checks.
+- Added API, error semantics, and release checklist documentation.
+
 ## 0.29.0
 
 - Added `Graph::dag_paths` to enumerate all directed paths between two nodes in an acyclic graph.

@@ -208,6 +208,140 @@ pub fn[N : Hash + Eq] Graph::bidirectional_dijkstra(
 }
 
 ///|
+pub fn[N : Hash + Eq] Graph::bidirectional_astar(
+  self : Graph[N],
+  start : N,
+  goal : N,
+  heuristic : (N, N) -> Int,
+) -> Path[N]? {
+  if start == goal {
+    return Some(Path::{ cost: 0, nodes: [start], visited: 1 })
+  }
+  let reversed = self.transpose()
+  let forward = PriorityQueue::new()
+  let backward = PriorityQueue::new()
+  let dist_forward : @hashmap.HashMap[N, Int] = @hashmap.HashMap([])
+  let dist_backward : @hashmap.HashMap[N, Int] = @hashmap.HashMap([])
+  let parents_forward : @hashmap.HashMap[N, N] = @hashmap.HashMap([])
+  let parents_backward : @hashmap.HashMap[N, N] = @hashmap.HashMap([])
+  let closed_forward : @hashset.HashSet[N] = @hashset.HashSet([])
+  let closed_backward : @hashset.HashSet[N] = @hashset.HashSet([])
+  let mut best : Int? = None
+  let mut meeting : N? = None
+  forward.push(start, heuristic(start, goal))
+  backward.push(goal, heuristic(goal, start))
+  dist_forward.set(start, 0)
+  dist_backward.set(goal, 0)
+
+  while true {
+    let mut progressed = false
+    match forward.pop_min() {
+      Some(item) => {
+        progressed = true
+        let current = item.node
+        if !closed_forward.contains(current) {
+          closed_forward.add(current)
+          let current_cost = dist_forward.get_or_default(current, 0)
+          match dist_backward.get(current) {
+            Some(other_cost) => {
+              let candidate = current_cost + other_cost
+              match best {
+                Some(existing) =>
+                  if candidate < existing {
+                    best = Some(candidate)
+                    meeting = Some(current)
+                  }
+                None => {
+                  best = Some(candidate)
+                  meeting = Some(current)
+                }
+              }
+            }
+            None => ()
+          }
+          for edge in self.neighbors(current) {
+            let next_cost = current_cost + edge.cost
+            match dist_forward.get(edge.to) {
+              Some(existing) =>
+                if next_cost < existing {
+                  dist_forward.set(edge.to, next_cost)
+                  parents_forward.set(edge.to, current)
+                  forward.push(edge.to, next_cost + heuristic(edge.to, goal))
+                }
+              None => {
+                dist_forward.set(edge.to, next_cost)
+                parents_forward.set(edge.to, current)
+                forward.push(edge.to, next_cost + heuristic(edge.to, goal))
+              }
+            }
+          }
+        }
+      }
+      None => ()
+    }
+    match backward.pop_min() {
+      Some(item) => {
+        progressed = true
+        let current = item.node
+        if !closed_backward.contains(current) {
+          closed_backward.add(current)
+          let current_cost = dist_backward.get_or_default(current, 0)
+          match dist_forward.get(current) {
+            Some(other_cost) => {
+              let candidate = current_cost + other_cost
+              match best {
+                Some(existing) =>
+                  if candidate < existing {
+                    best = Some(candidate)
+                    meeting = Some(current)
+                  }
+                None => {
+                  best = Some(candidate)
+                  meeting = Some(current)
+                }
+              }
+            }
+            None => ()
+          }
+          for edge in reversed.neighbors(current) {
+            let next_cost = current_cost + edge.cost
+            match dist_backward.get(edge.to) {
+              Some(existing) =>
+                if next_cost < existing {
+                  dist_backward.set(edge.to, next_cost)
+                  parents_backward.set(edge.to, current)
+                  backward.push(edge.to, next_cost + heuristic(edge.to, start))
+                }
+              None => {
+                dist_backward.set(edge.to, next_cost)
+                parents_backward.set(edge.to, current)
+                backward.push(edge.to, next_cost + heuristic(edge.to, start))
+              }
+            }
+          }
+        }
+      }
+      None => ()
+    }
+    if !progressed {
+      break
+    }
+  }
+
+  match (best, meeting) {
+    (Some(cost), Some(mid)) =>
+      Some(Path::{
+        cost,
+        nodes: reconstruct_bidirectional_path(
+          parents_forward, parents_backward, start, mid, goal,
+        ),
+        visited: closed_forward.length() + closed_backward.length(),
+      })
+    _ => None
+  }
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::astar(
   self : Graph[N],
   start : N,
@@ -418,6 +552,40 @@ pub fn[N : Hash + Eq] Graph::shortest_distance(
 }
 
 ///|
+pub fn[N : Hash + Eq] bellman_ford_distances(
+  nodes : Array[N],
+  arcs : Array[Arc[N]],
+  start : N,
+) -> @hashmap.HashMap[N, Int]? {
+  match bellman_ford_scan(nodes, arcs, start) {
+    Some((dist, _parents)) => Some(dist)
+    None => None
+  }
+}
+
+///|
+pub fn[N : Hash + Eq] bellman_ford_path(
+  nodes : Array[N],
+  arcs : Array[Arc[N]],
+  start : N,
+  goal : N,
+) -> Path[N]? {
+  match bellman_ford_scan(nodes, arcs, start) {
+    Some((dist, parents)) =>
+      match dist.get(goal) {
+        Some(cost) =>
+          Some(Path::{
+            cost,
+            nodes: reconstruct_arc_path(parents, start, goal),
+            visited: dist.length(),
+          })
+        None => None
+      }
+    None => None
+  }
+}
+
+///|
 pub fn[N : Hash + Eq] Graph::all_pairs_distances(
   self : Graph[N],
 ) -> @hashmap.HashMap[N, @hashmap.HashMap[N, Int]] {
@@ -448,6 +616,91 @@ pub fn[N : Hash + Eq] Graph::diameter(self : Graph[N]) -> Int? {
     }
   }
   Some(best)
+}
+
+///|
+fn[N : Hash + Eq] bellman_ford_scan(
+  nodes : Array[N],
+  arcs : Array[Arc[N]],
+  start : N,
+) -> (@hashmap.HashMap[N, Int], @hashmap.HashMap[N, Arc[N]])? {
+  let universe = collect_bellman_ford_nodes(nodes, arcs, start)
+  let dist : @hashmap.HashMap[N, Int] = @hashmap.HashMap([])
+  let parents : @hashmap.HashMap[N, Arc[N]] = @hashmap.HashMap([])
+  dist.set(start, 0)
+  let mut round = 0
+  while round + 1 < universe.length() {
+    let mut changed = false
+    for arc in arcs {
+      match dist.get(arc.from) {
+        Some(current_cost) => {
+          let next_cost = current_cost + arc.cost
+          match dist.get(arc.to) {
+            Some(existing) =>
+              if next_cost < existing {
+                dist.set(arc.to, next_cost)
+                parents.set(arc.to, arc)
+                changed = true
+              }
+            None => {
+              dist.set(arc.to, next_cost)
+              parents.set(arc.to, arc)
+              changed = true
+            }
+          }
+        }
+        None => ()
+      }
+    }
+    if !changed {
+      break
+    }
+    round += 1
+  }
+  for arc in arcs {
+    match dist.get(arc.from) {
+      Some(current_cost) => {
+        let next_cost = current_cost + arc.cost
+        match dist.get(arc.to) {
+          Some(existing) => if next_cost < existing { return None }
+          None => return None
+        }
+      }
+      None => ()
+    }
+  }
+  Some((dist, parents))
+}
+
+///|
+fn[N : Hash + Eq] collect_bellman_ford_nodes(
+  nodes : Array[N],
+  arcs : Array[Arc[N]],
+  start : N,
+) -> Array[N] {
+  let seen : @hashset.HashSet[N] = @hashset.HashSet([])
+  let out : Array[N] = []
+  add_unique_node(out, seen, start)
+  for node in nodes {
+    add_unique_node(out, seen, node)
+  }
+  for arc in arcs {
+    add_unique_node(out, seen, arc.from)
+    add_unique_node(out, seen, arc.to)
+  }
+  out
+}
+
+///|
+fn[N : Hash + Eq] add_unique_node(
+  out : Array[N],
+  seen : @hashset.HashSet[N],
+  node : N,
+) -> Unit {
+  if !seen.contains(node) {
+    seen.add(node)
+    out.push(node)
+  }
 }
 
 ///|
@@ -510,6 +763,27 @@ fn[N : Hash + Eq] reconstruct_path(
     match parents.get(current) {
       Some(parent) => {
         current = parent
+        path.push(current)
+      }
+      None => break
+    }
+  }
+  path.rev()
+}
+
+///|
+fn[N : Hash + Eq] reconstruct_arc_path(
+  parents : @hashmap.HashMap[N, Arc[N]],
+  start : N,
+  goal : N,
+) -> Array[N] {
+  let path : Array[N] = []
+  let mut current = goal
+  path.push(current)
+  while current != start {
+    match parents.get(current) {
+      Some(parent) => {
+        current = parent.from
         path.push(current)
       }
       None => break

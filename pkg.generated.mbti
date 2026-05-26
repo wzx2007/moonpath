@@ -5,9 +5,14 @@ import {
   "moonbitlang/core/debug",
   "moonbitlang/core/hashmap",
   "moonbitlang/core/hashset",
+  "moonbitlang/core/json",
 }
 
 // Values
+pub fn[N : Hash + Eq] bellman_ford_distances(Array[N], Array[Arc[N]], N) -> @hashmap.HashMap[N, Int]?
+
+pub fn[N : Hash + Eq] bellman_ford_path(Array[N], Array[Arc[N]], N, N) -> Path[N]?
+
 pub fn manhattan(Point, Point) -> Int
 
 pub fn octile(Point, Point) -> Int
@@ -21,17 +26,17 @@ pub(all) struct Arc[N] {
   from : N
   to : N
   cost : Int
-} derive(Eq, @debug.Debug)
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 pub(all) struct CellCost {
   point : Point
   cost : Int
-} derive(Eq, @debug.Debug)
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 pub(all) struct Edge[N] {
   to : N
   cost : Int
-} derive(Eq, @debug.Debug)
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 pub(all) struct Graph[N] {
   mut adjacency : @hashmap.HashMap[N, Array[Edge[N]]]
@@ -45,6 +50,7 @@ pub fn[N] Graph::arcs(Self[N]) -> Array[Arc[N]]
 pub fn[N : Hash + Eq] Graph::astar(Self[N], N, N, (N, N) -> Int) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::bfs(Self[N], N, N) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::bfs_tree(Self[N], N) -> Array[Arc[N]]
+pub fn[N : Hash + Eq] Graph::bidirectional_astar(Self[N], N, N, (N, N) -> Int) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::bidirectional_dijkstra(Self[N], N, N) -> Path[N]?
 pub fn[N : Hash + Eq] Graph::clear_edges_from(Self[N], N) -> Int
 pub fn[N : Hash + Eq] Graph::connected_components(Self[N]) -> Array[Array[N]]
@@ -61,6 +67,8 @@ pub fn[N : Hash + Eq] Graph::distances_from(Self[N], N) -> @hashmap.HashMap[N, I
 pub fn[N : Hash + Eq] Graph::eccentricity(Self[N], N) -> Int?
 pub fn[N] Graph::edge_count(Self[N]) -> Int
 pub fn[N : Hash + Eq] Graph::from_arcs(Array[Arc[N]]) -> Self[N]
+pub fn Graph::from_json_string(String) -> Self[String]?
+pub fn Graph::from_text(String) -> Self[String]?
 pub fn[N : Hash + Eq] Graph::has_path(Self[N], N, N) -> Bool
 pub fn[N : Eq] Graph::in_degree(Self[N], N) -> Int
 pub fn[N : Hash + Eq] Graph::induced_subgraph(Self[N], (N) -> Bool) -> Self[N]
@@ -85,6 +93,9 @@ pub fn[N : Hash + Eq] Graph::shortest_path_tree(Self[N], N) -> Array[Arc[N]]
 pub fn[N : Hash + Eq] Graph::sinks(Self[N]) -> Array[N]
 pub fn[N : Hash + Eq] Graph::sources(Self[N]) -> Array[N]
 pub fn[N : Hash + Eq] Graph::strongly_connected_components(Self[N]) -> Array[Array[N]]
+pub fn Graph::to_json(Self[String]) -> Json
+pub fn Graph::to_json_string(Self[String]) -> String
+pub fn Graph::to_text(Self[String]) -> String
 pub fn[N : Hash + Eq] Graph::topological_layers(Self[N]) -> Array[Array[N]]?
 pub fn[N : Hash + Eq] Graph::topological_sort(Self[N]) -> Array[N]?
 pub fn[N] Graph::total_edge_cost(Self[N]) -> Int
@@ -101,6 +112,8 @@ pub(all) struct Grid {
 pub fn Grid::astar4(Self, Point, Point) -> Path[Point]?
 pub fn Grid::astar8(Self, Point, Point) -> Path[Point]?
 pub fn Grid::astar8_no_corner_cutting(Self, Point, Point) -> Path[Point]?
+pub fn Grid::bidirectional_astar4(Self, Point, Point) -> Path[Point]?
+pub fn Grid::bidirectional_astar8(Self, Point, Point) -> Path[Point]?
 pub fn Grid::block(Self, Point) -> Unit
 pub fn Grid::block_rect(Self, Point, Int, Int) -> Unit
 pub fn Grid::blocked_points(Self) -> Array[Point]
@@ -112,7 +125,9 @@ pub fn Grid::contains(Self, Point) -> Bool
 pub fn Grid::dijkstra4(Self, Point, Point) -> Path[Point]?
 pub fn Grid::dijkstra8(Self, Point, Point) -> Path[Point]?
 pub fn Grid::from_blocked(Int, Int, Array[Point]) -> Self
+pub fn Grid::from_json_string(String) -> Self?
 pub fn Grid::from_parts(Int, Int, Array[Point], Array[CellCost]) -> Self
+pub fn Grid::from_text(String) -> Self?
 pub fn Grid::inflated_blocks(Self, Int) -> Self
 pub fn Grid::is_blocked(Self, Point) -> Bool
 pub fn Grid::is_fully_connected4(Self) -> Bool
@@ -141,6 +156,9 @@ pub fn Grid::terrain_cells(Self) -> Array[CellCost]
 pub fn Grid::terrain_cost(Self, Point) -> Int?
 pub fn Grid::to_graph4(Self) -> Graph[Point]
 pub fn Grid::to_graph8(Self) -> Graph[Point]
+pub fn Grid::to_json(Self) -> Json
+pub fn Grid::to_json_string(Self) -> String
+pub fn Grid::to_text(Self) -> String
 pub fn Grid::unblock(Self, Point) -> Unit
 pub fn Grid::unblock_rect(Self, Point, Int, Int) -> Unit
 
@@ -148,14 +166,14 @@ pub(all) struct Path[N] {
   cost : Int
   nodes : Array[N]
   visited : Int
-} derive(Eq, @debug.Debug)
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 pub fn[N] Path::edge_count(Self[N]) -> Int
 pub fn[N] Path::node_count(Self[N]) -> Int
 
 pub(all) struct Point {
   x : Int
   y : Int
-} derive(Eq, Hash, @debug.Debug)
+} derive(Eq, Hash, ToJson, @debug.Debug, @json.FromJson)
 pub fn Point::new(Int, Int) -> Self
 pub fn Point::offset(Self, Int, Int) -> Self
 
