@@ -9,8 +9,10 @@
 - CLI demo 可运行。
 - CI 配置已提供，并在 GitHub Actions 通过。
 - 开发报告已提供。
+- 最终提交说明已提供。
 - 一页项目申报书 PDF 已提供。
 - 赛题要求摘要已提供。
+- `v0.30.0` 版本标签和 GitHub Release 已创建。
 
 ## 本地验证命令
 
@@ -23,7 +25,6 @@ moon build
 moon test
 moon run cmd/main
 moon run cmd/bench
-moon info
 moon info
 ```
 
@@ -42,17 +43,18 @@ moonpath bench timing: [...]
 
 - `docs/project-proposal.md` 中的姓名、联系方式和仓库链接。
 - `moon.mod` 中的 `repository`。
-- GitHub 仓库描述、Topics、许可证。
-- GitLink 仓库内容同步状态。
+- GitHub 仓库描述、Topics、许可证和 `v0.30.0` Release。
+- GitLink 仓库内容同步状态和 `v0.30.0` 标签。
 - 一页 PDF 中的姓名、联系方式、GitHub 链接和 GitLink 链接。
 
 ## 线上提交步骤
 
 1. GitHub 仓库地址：`https://github.com/wzx2007/moonpath`。
 2. GitLink 仓库地址：`https://www.gitlink.org.cn/w1tness/moonpath`。
-3. 按赛事群/CCF 要求提交报名信息和申报问卷。
-4. 上传桌面 `MoonBit` 文件夹中的 `MoonPath_项目申报书_一页版.pdf`。
-5. 保持真实开发记录，补足 10-20 次有效 commits。
+3. GitHub Release：`https://github.com/wzx2007/moonpath/releases/tag/v0.30.0`。
+4. 按赛事群/CCF 要求提交报名信息和申报问卷。
+5. 上传桌面 `MoonBit` 文件夹中的 `MoonPath_项目申报书_一页版.pdf`，并附 `docs/final-submission.md` 摘要内容。
+6. 提交记录已保留真实开发过程，可作为项目持续完善证明。
 
 ## 建议提交历史
 
@@ -91,5 +93,5 @@ moonpath bench timing: [...]
 
 ## 验收风险
 
-- GitHub 与 GitLink 已公开；最终提交前仍需确认两侧内容同步正常。
-- 当前代码规模已从最小 MVP 扩展为可用基础库，但距离赛题提到的 4-10k 有效 MoonBit 代码行数仍需继续扩展更多算法、测试和示例。
+- GitHub 与 GitLink 已公开并同步；最终仍需在赛事提交页面人工确认链接可访问。
+- 代码、测试、文档和 Release 已完成；剩余风险主要来自赛事表单填写、附件上传和平台页面人工确认。

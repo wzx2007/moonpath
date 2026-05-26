@@ -449,11 +449,12 @@ moonpath bench timing: [...]
 - `docs/error-semantics.md`: abort, `None`, and empty collection behavior.
 - `docs/release-checklist.md`: release and repository metadata checklist.
 - `docs/submission-checklist.md`: GitHub/GitLink submission checklist.
+- `docs/final-submission.md`: final contest submission summary.
 - `docs/competition-requirements.md`: extracted requirements from the contest page.
 
 ## Release Status
 
-The contest MVP roadmap items are implemented: serialization, generated property checks, bidirectional A*, negative-edge Bellman-Ford helpers, and timed benchmark summaries are all present. Remaining release work is repository housekeeping: final GitHub/GitLink metadata checks, CI confirmation, and public package publication when MoonBit package distribution is desired.
+The contest MVP roadmap items are implemented: serialization, generated property checks, bidirectional A*, negative-edge Bellman-Ford helpers, and timed benchmark summaries are all present. Version `v0.30.0` is tagged and published as a GitHub Release, with GitHub, GitLink, and the desktop artifact folder synchronized.
 
 ## License
 
