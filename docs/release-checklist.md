@@ -1,6 +1,6 @@
 # Release Checklist
 
-Current library status: `0.30.0`.
+Current library status: `0.30.1`.
 
 ## Required Local Checks
 

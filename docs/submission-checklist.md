@@ -12,7 +12,7 @@
 - 最终提交说明已提供。
 - 一页项目申报书 PDF 已提供。
 - 赛题要求摘要已提供。
-- `v0.30.0` 版本标签和 GitHub Release 已创建。
+- `v0.30.1` 版本标签和 GitHub Release 已创建。
 
 ## 本地验证命令
 
@@ -43,15 +43,15 @@ moonpath bench timing: [...]
 
 - `docs/project-proposal.md` 中的姓名、联系方式和仓库链接。
 - `moon.mod` 中的 `repository`。
-- GitHub 仓库描述、Topics、许可证和 `v0.30.0` Release。
-- GitLink 仓库内容同步状态和 `v0.30.0` 标签。
+- GitHub 仓库描述、Topics、许可证和 `v0.30.1` Release。
+- GitLink 仓库内容同步状态和 `v0.30.1` 标签。
 - 一页 PDF 中的姓名、联系方式、GitHub 链接和 GitLink 链接。
 
 ## 线上提交步骤
 
 1. GitHub 仓库地址：`https://github.com/wzx2007/moonpath`。
 2. GitLink 仓库地址：`https://www.gitlink.org.cn/w1tness/moonpath`。
-3. GitHub Release：`https://github.com/wzx2007/moonpath/releases/tag/v0.30.0`。
+3. GitHub Release：`https://github.com/wzx2007/moonpath/releases/tag/v0.30.1`。
 4. 按赛事群/CCF 要求提交报名信息和申报问卷。
 5. 上传桌面 `MoonBit` 文件夹中的 `MoonPath_项目申报书_一页版.pdf`，并附 `docs/final-submission.md` 摘要内容。
 6. 提交记录已保留真实开发过程，可作为项目持续完善证明。

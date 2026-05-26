@@ -454,7 +454,7 @@ moonpath bench timing: [...]
 
 ## Release Status
 
-The contest MVP roadmap items are implemented: serialization, generated property checks, bidirectional A*, negative-edge Bellman-Ford helpers, and timed benchmark summaries are all present. Version `v0.30.0` is tagged and published as a GitHub Release, with GitHub, GitLink, and the desktop artifact folder synchronized.
+The contest MVP roadmap items are implemented: serialization, generated property checks, bidirectional A*, negative-edge Bellman-Ford helpers, and timed benchmark summaries are all present. Version `v0.30.1` is tagged and published as a GitHub Release, with GitHub, GitLink, and the desktop artifact folder synchronized.
 
 ## License
 

@@ -7,8 +7,8 @@
 - 联系方式：2025213290@bupt.cn / 15911070830
 - GitHub：https://github.com/wzx2007/moonpath
 - GitLink：https://www.gitlink.org.cn/w1tness/moonpath
-- 版本：v0.30.0
-- Release：https://github.com/wzx2007/moonpath/releases/tag/v0.30.0
+- 版本：v0.30.1
+- Release：https://github.com/wzx2007/moonpath/releases/tag/v0.30.1
 - 许可证：Apache-2.0
 
 ## 成果概述
@@ -39,7 +39,7 @@ MoonPath 是一个面向 MoonBit 生态的图算法与 tile-grid 寻路基础库
 | API 文档 | 已完成，见 `docs/api.md` |
 | 错误语义统一 | 已完成，见 `docs/error-semantics.md` |
 | Bellman-Ford / 负权支持 | 已完成，提供独立 `bellman_ford_path` / `bellman_ford_distances` |
-| 发布准备 | 已完成，版本 `0.30.0`、tag、GitHub Release、Topics、GitLink 同步均已处理 |
+| 发布准备 | 已完成，版本 `0.30.1`、tag、GitHub Release、Topics、GitLink 同步均已处理 |
 
 ## 验证结果
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.30.1
+
+- Added final contest submission summary documentation.
+- Updated submission checklist and README release status for final artifact handoff.
+- Synchronized release metadata for the final contest submission package.
+
 ## 0.30.0
 
 - Added JSON and line-oriented text import/export helpers for `Graph[String]` and `Grid`.
